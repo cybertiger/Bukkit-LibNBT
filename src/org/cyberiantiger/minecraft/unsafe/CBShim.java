@@ -38,6 +38,7 @@ public class CBShim {
         }
         String childPackage = pkg.substring(i+1);
         String className = type.getClass().getPackage().getName() + '.' + childPackage + '.' + type.getSimpleName();
+        System.out.println("Loading class: " + className);
         try {
             Class<T> typeClass = (Class<T>) CBShim.class.getClassLoader().loadClass(className);
             Constructor[] constructors = typeClass.getConstructors();
