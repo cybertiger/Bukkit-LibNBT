@@ -38,7 +38,7 @@ public class CBShim {
             unsupportedVersion(plugin.getServer());
         }
         String childPackage = pkg.substring(i+1);
-        String className = type.getClass().getPackage().getName() + '.' + childPackage + '.' + type.getSimpleName();
+        String className = type.getPackage().getName() + '.' + childPackage + '.' + type.getSimpleName();
         try {
             Class<T> typeClass = (Class<T>) CBShim.class.getClassLoader().loadClass(className);
             Constructor[] constructors = typeClass.getConstructors();
