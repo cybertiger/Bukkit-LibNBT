@@ -18,13 +18,9 @@ import org.bukkit.plugin.Plugin;
 public class CBShim {
 
     private static final String CRAFTBUKKIT_PACKAGE = "org.bukkit.craftbukkit";
-    private static final Map<Class<?>,Object> cache = new HashMap<Class<?>, Object>();
 
     public static <T> T createShim(Class<T> type, Plugin plugin, Object... args) {
-        T ret = (T) cache.get(type);
-        if (ret != null) {
-            return ret;
-        }
+        T ret = null;
         Class<?> serverClass = plugin.getServer().getClass();
         while (!serverClass.getPackage().getName().startsWith(CRAFTBUKKIT_PACKAGE) ) {
             serverClass = serverClass.getSuperclass();
@@ -49,13 +45,12 @@ public class CBShim {
                     continue LOOP;
                 for (i = 0; i < parameterTypes.length; i++) {
                     Class parameterType = parameterTypes[i];
-                    if (!parameterType.isInstance(args))
+                    if (!parameterType.isInstance(args[i]))
                         continue LOOP;
                 }
                 ret = (T) constructor.newInstance(args);
                 break LOOP;
             }
-            cache.put(type, ret);
             return ret;
         } catch (ClassNotFoundException ex) {
             unsupportedVersion(plugin.getServer(), ex);
