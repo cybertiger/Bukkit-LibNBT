@@ -10,3 +10,4 @@ lib/*
 build.xml
 build/*
 nbproject/*
+*/target/*
