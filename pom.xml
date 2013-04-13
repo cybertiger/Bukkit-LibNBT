@@ -34,5 +34,19 @@
                 </configuration>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>cyberiantiger</id>
+            <name>CyberianTiger Maven Repository</name>
+            <url>dav:http://cyberiantiger.org/maven/</url>
+        </repository>
+    </distributionManagement>
 </project>
