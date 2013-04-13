@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.cyberiantiger.minecraft</groupId>
-  <artifactId>libnbt-parent</artifactId>
-  <version>1.0</version>
-  <packaging>pom</packaging>
-  <modules>
-    <module>libnbt-core</module>
-    <module>libnbt-v1_4_R1</module>
-    <module>libnbt-v1_5_R1</module>
-    <module>libnbt-v1_5_R2</module>
-    <module>libnbt</module>
-  </modules>
-  <repositories>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.cyberiantiger.minecraft</groupId>
+    <artifactId>libnbt-parent</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>libnbt-core</module>
+        <module>libnbt-v1_4_R1</module>
+        <module>libnbt-v1_5_R1</module>
+        <module>libnbt-v1_5_R2</module>
+        <module>libnbt</module>
+    </modules>
+    <repositories>
 		<repository>
 			<id>bukkit-rel</id>
 			<name>repo.bukkit.org Releases</name>
@@ -23,4 +23,16 @@
 			<url>http://repo.bukkit.org/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
