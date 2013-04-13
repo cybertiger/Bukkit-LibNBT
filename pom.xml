@@ -11,6 +11,11 @@
         <module>libnbt-v1_5_R2</module>
         <module>libnbt</module>
     </modules>
+    <scm>
+        <url>https://github.com/cybertiger/Bukkit-LibNBT/</url>
+        <connection>scm:git:git://github.com/cybertiger/Bukkit-LibNBT.git</connection>
+<developerConnection>scm:git:git@github.com:cybertiger/Bukkit-LibNBT.git</developerConnection>
+    </scm>
     <repositories>
 		<repository>
 			<id>bukkit-rel</id>
