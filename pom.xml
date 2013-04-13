@@ -44,9 +44,14 @@
     </build>
     <distributionManagement>
         <repository>
-            <id>cyberiantiger</id>
+            <id>cyberiantiger.release</id>
             <name>CyberianTiger Maven Repository</name>
-            <url>dav:http://cyberiantiger.org/maven/</url>
+            <url>dav:http://cyberiantiger.org/maven/release/</url>
         </repository>
+        <snapshotRepository>
+            <id>cyberiantiger.snapshot</id>
+            <name>CyberianTiger Maven Repository</name>
+            <url>dav:http://cyberiantiger.org/maven/snapshot/</url>
+        </snapshotRepository>
     </distributionManagement>
 </project>
