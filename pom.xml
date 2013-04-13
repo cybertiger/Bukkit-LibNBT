@@ -14,19 +14,13 @@
     <scm>
         <url>https://github.com/cybertiger/Bukkit-LibNBT/</url>
         <connection>scm:git:git://github.com/cybertiger/Bukkit-LibNBT.git</connection>
-<developerConnection>scm:git:git@github.com:cybertiger/Bukkit-LibNBT.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:cybertiger/Bukkit-LibNBT.git</developerConnection>
     </scm>
     <repositories>
-		<repository>
-			<id>bukkit-rel</id>
-			<name>repo.bukkit.org Releases</name>
-			<url>http://repo.bukkit.org/content/repositories/releases/</url>
-		</repository>
-		<repository>
-			<id>bukkit-snapshots</id>
-			<name>repo.bukkit.org Releases</name>
-			<url>http://repo.bukkit.org/content/repositories/snapshots/</url>
-		</repository>
+        <repository>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
+        </repository>
 	</repositories>
     <build>
         <plugins>
@@ -49,14 +43,14 @@
     </build>
     <distributionManagement>
         <repository>
-            <id>cyberiantiger.release</id>
+            <id>cyberiantiger.repo</id>
             <name>CyberianTiger Maven Repository</name>
-            <url>dav:http://cyberiantiger.org/maven/release/</url>
+            <url>dav:http://cyberiantiger.org/maven</url>
         </repository>
         <snapshotRepository>
-            <id>cyberiantiger.snapshot</id>
+            <id>cyberiantiger.repo</id>
             <name>CyberianTiger Maven Repository</name>
-            <url>dav:http://cyberiantiger.org/maven/snapshot/</url>
+            <url>dav:http://cyberiantiger.org/maven</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
