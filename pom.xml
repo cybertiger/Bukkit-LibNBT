@@ -21,6 +21,10 @@
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>cyberiantiger.repo</id>
+            <url>http://cyberiantiger.org/maven/</url>
+        </repository>
 	</repositories>
     <build>
         <plugins>
