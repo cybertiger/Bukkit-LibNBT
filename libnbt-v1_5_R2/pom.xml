@@ -30,7 +30,7 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>craftbukkit</artifactId>
-  		<version>1.5.1-R0.2-SNAPSHOT</version>
+  		<version>1.5.1-R0.1</version>
   	</dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
