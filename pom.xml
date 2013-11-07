@@ -10,6 +10,7 @@
         <module>libnbt-v1_5_R1</module>
         <module>libnbt-v1_5_R2</module>
         <module>libnbt-v1_5_R3</module>
+        <module>libnbt-v1_6_R1</module>
         <module>libnbt</module>
     </modules>
     <scm>
