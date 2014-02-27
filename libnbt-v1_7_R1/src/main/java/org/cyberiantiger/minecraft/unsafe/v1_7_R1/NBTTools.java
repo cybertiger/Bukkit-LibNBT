@@ -52,8 +52,10 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
 
     public NBTTagCompound toNativeCompound(CompoundTag tag) {
         NBTTagCompound result = new NBTTagCompound();
-        for (Tag t : tag.getValue().values()) {
+        for (Map.Entry<String,Tag> e : tag.getValue().entrySet()) {
             NBTBase base;
+            String name = e.getKey();
+            Tag t = e.getValue();
             switch (t.getType()) {
                 case BYTE:
                     base = new NBTTagByte(((ByteTag)t).getRawValue());
@@ -92,7 +94,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                     // Can't be reached.
                     throw new IllegalArgumentException();
             }
-            result.set(t.getName(), base);
+            result.set(name, base);
         }
         return result;
     }
@@ -175,6 +177,10 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
     }
 
     public CompoundTag fromNativeCompound(NBTTagCompound tag) {
+        return fromNativeCompound(null, tag);
+    }
+
+    public CompoundTag fromNativeCompound(String parentName, NBTTagCompound tag) {
         if (COMPOUND_MAP_FIELD != null) {
             try {
                 Map<String, Tag> result = new HashMap<String, Tag>();
@@ -190,7 +196,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                             result.put(name, new ByteArrayTag(name, ((NBTTagByteArray) b).c()));
                             break;
                         case COMPOUND:
-                            result.put(name, fromNativeCompound((NBTTagCompound) b));
+                            result.put(name, fromNativeCompound(name, (NBTTagCompound) b));
                             break;
                         case DOUBLE:
                             result.put(name, new DoubleTag(name, ((NBTTagDouble) b).g()));
@@ -205,7 +211,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                             result.put(name, new IntArrayTag(name, ((NBTTagIntArray) b).c()));
                             break;
                         case LIST:
-                            result.put(name, fromNativeList((NBTTagList) b));
+                            result.put(name, fromNativeList(name, (NBTTagList) b));
                             break;
                         case LONG:
                             result.put(name, new LongTag(name, ((NBTTagLong) b).c()));
@@ -218,7 +224,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                             break;
                     }
                 }
-                return new CompoundTag(null, result);
+                return new CompoundTag(parentName, result);
             } catch (IllegalArgumentException ex) {
                 Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
@@ -244,6 +250,10 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
     }
 
     public ListTag fromNativeList(NBTTagList tag) {
+        return fromNativeList(null, tag);
+    }
+
+    public ListTag fromNativeList(String parentName, NBTTagList tag) {
         try {
             TagType type = TagType.values()[tag.d()];
             if (type == TagType.END) {
@@ -312,7 +322,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                     }
                     break;
             }
-            return new ListTag(null, type, t);
+            return new ListTag(parentName, type, t);
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
