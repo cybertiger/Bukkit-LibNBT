@@ -20,6 +20,8 @@ public interface NBTTools {
 
     public CompoundTag readEntity(Entity entity);
 
+    public void updateEntity(Entity entity, CompoundTag tag);
+
     public CompoundTag readTileEntity(Block b);
 
     public void writeTileEntity(Block b, CompoundTag tag);

@@ -362,6 +362,12 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
     }
 
     @Override
+    public void updateEntity(Entity entity, CompoundTag tag) {
+        CraftEntity craftEntity = (CraftEntity)entity;
+        craftEntity.getHandle().e(toNativeCompound(tag));
+    }
+
+    @Override
     public Entity getEntityById(World world, int id) {
         CraftWorld craftWorld = (CraftWorld) world;
         net.minecraft.server.v1_4_R1.Entity entity = craftWorld.getHandle().getEntity(id);
