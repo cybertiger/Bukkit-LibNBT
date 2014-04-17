@@ -85,5 +85,15 @@
       <artifactId>libnbt-v1_7_R1</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>libnbt-v1_7_R2</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>libnbt-v1_7_R3</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
