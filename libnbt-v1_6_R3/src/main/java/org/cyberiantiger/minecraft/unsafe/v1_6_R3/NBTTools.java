@@ -23,6 +23,7 @@ import net.minecraft.server.v1_6_R3.NBTTagLong;
 import net.minecraft.server.v1_6_R3.NBTTagShort;
 import net.minecraft.server.v1_6_R3.NBTTagString;
 import net.minecraft.server.v1_6_R3.TileEntity;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_6_R3.entity.CraftEntity;
@@ -359,5 +360,14 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
         NBTTagCompound compound = new NBTTagCompound();
         handle.d(compound);
         return fromNativeCompound(compound);
+    }
+
+    @Override
+    public Entity getEntityById(World world, int id) {
+        CraftWorld craftWorld = (CraftWorld) world;
+        net.minecraft.server.v1_6_R3.Entity entity = craftWorld.getHandle().getEntity(id);
+        if (entity == null)
+            return null;
+        return entity.getBukkitEntity();
     }
 }
