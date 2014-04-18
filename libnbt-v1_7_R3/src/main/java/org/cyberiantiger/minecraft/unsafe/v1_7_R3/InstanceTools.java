@@ -4,7 +4,6 @@
  */
 package org.cyberiantiger.minecraft.unsafe.v1_7_R3;
 
-import org.cyberiantiger.minecraft.util.FileUtils;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,24 +44,13 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 import org.cyberiantiger.minecraft.Coord;
 import org.cyberiantiger.minecraft.generator.VoidGenerator;
+import org.cyberiantiger.minecraft.unsafe.AbstractInstanceTools;
 
 /**
  *
  * @author antony
  */
-public final class InstanceTools implements org.cyberiantiger.minecraft.unsafe.InstanceTools {
-    public static final String FOLDER_NAME = "worlds";
-
-    private boolean isParent(File parent, File child) {
-        if (child == null) {
-            return false;
-        } else if (child == parent) {
-            return true;
-        } else {
-            return isParent(parent, child.getParentFile());
-        }
-    }
-
+public final class InstanceTools extends AbstractInstanceTools {
     public void unloadWorld(Plugin plugin, World world) {
         try {
             plugin.getServer().unloadWorld(world, false);
@@ -94,67 +82,16 @@ public final class InstanceTools implements org.cyberiantiger.minecraft.unsafe.I
     }
 
     @Override
-    public org.bukkit.World createInstance(final Plugin instances, Difficulty difficulty, String sourceWorld, String instanceName) {
-        World source = instances.getServer().getWorld(sourceWorld);
-        File dataFolder;
-        if (source == null) {
-            dataFolder = new File(instances.getServer().getWorldContainer(), sourceWorld);
-            if (!dataFolder.isDirectory()) {
-                instances.getLogger().info("Failed to create instance, could not find data folder " + dataFolder.getAbsolutePath() + " for world " + sourceWorld);
-                return null;
-            }
-        } else {
-            instances.getLogger().warning("Creating instance from loaded world " + sourceWorld + 
-                    "; This will increase loading time for instanced worlds and may cause " +
-                    "chunk corruption in the instance world, unload the source world in " +
-                    "a production environment e.g. via /mvunload <world>.");
-            dataFolder = source.getWorldFolder();
-        }
+    public org.bukkit.World createInstance(final Plugin plugin, Difficulty difficulty, String instanceName, File source, File destination) {
+        checkDirectories(source, destination);
 
-        MinecraftServer console = ((CraftServer) instances.getServer()).getServer();
+        MinecraftServer console = ((CraftServer) plugin.getServer()).getServer();
         if (console == null) {
-            instances.getLogger().info("Failed to create instance, could not locate console object.");
-            return null;
+            throw new IllegalStateException("Minecraft console was null");
         }
-
-        File worldFolder = new File(instances.getDataFolder(), FOLDER_NAME);
-        File saveDataFolder = new File(worldFolder, instanceName);
-
-        if (saveDataFolder.isDirectory()) {
-            try {
-                final File tempFile = File.createTempFile("deleted_",".world", worldFolder);
-                tempFile.delete();
-                if(saveDataFolder.renameTo(tempFile)) {
-                    instances.getLogger().info("Renamed old world data");
-                    instances.getServer().getScheduler().runTaskAsynchronously(instances, new Runnable() {
-
-                        public void run() {
-                            try {
-                                if (!FileUtils.deleteRecursively(tempFile)) {
-                                    instances.getLogger().warning("Failed to delete archived instances world: " + tempFile);
-                                }
-                            } catch (IOException e) {
-                                instances.getLogger().warning("Failed to delete archived instances world: " + tempFile);
-                            }
-                        }
-                        
-                    });
-                } else {
-                    if (!FileUtils.deleteRecursively(saveDataFolder)) {
-                        instances.getLogger().log(Level.SEVERE, "Failed to delete world folder: " + saveDataFolder);
-                        return null;
-                    }
-                }
-            } catch (IOException ex) {
-                instances.getLogger().log(Level.SEVERE, null, ex);
-                return null;
-            }
-        }
-
-        saveDataFolder.mkdirs();
 
         IDataManager dataManager =
-                new InstanceDataManager(instances, source, dataFolder, saveDataFolder);
+                new InstanceDataManager(plugin, instanceName, source, destination);
 
         // XXX: Copy paste from craftbukkit.
         int dimension = 10 + console.worlds.size();
@@ -201,8 +138,8 @@ public final class InstanceTools implements org.cyberiantiger.minecraft.unsafe.I
 
         instanceWorld.getWorld().getPopulators().addAll(generator.getDefaultPopulators(instanceWorld.getWorld()));
 
-        instances.getServer().getPluginManager().callEvent(new WorldInitEvent(instanceWorld.getWorld()));
-        instances.getServer().getPluginManager().callEvent(new WorldLoadEvent(instanceWorld.getWorld()));
+        plugin.getServer().getPluginManager().callEvent(new WorldInitEvent(instanceWorld.getWorld()));
+        plugin.getServer().getPluginManager().callEvent(new WorldLoadEvent(instanceWorld.getWorld()));
 
         return instanceWorld.getWorld();
     }
@@ -216,23 +153,17 @@ public final class InstanceTools implements org.cyberiantiger.minecraft.unsafe.I
         private final Plugin instances;
         private final File loadDataFolder;
         private final String world;
-        private final World source;
 
-        public InstanceDataManager(Plugin instances, World source, File loadDataFolder, File saveDataFolder) {
+        public InstanceDataManager(Plugin instances, String instanceName, File loadDataFolder, File saveDataFolder) {
             // false flag - do not create players directory.
             super(saveDataFolder.getParentFile(), saveDataFolder.getName(), false);
             this.instances = instances;
-            this.source = source;
             this.loadDataFolder = loadDataFolder;
-            this.world = saveDataFolder.getName();
+            this.world = instanceName;
         }
 
         @Override
         public WorldData getWorldData() {
-            if (source != null) {
-                // Force the source world to save, this could be costly.
-                source.save();
-            }
             File levelData = new File(getDirectory(), WORLD_DATA);
             if (levelData.isFile()) {
                 return super.getWorldData();
@@ -286,14 +217,11 @@ public final class InstanceTools implements org.cyberiantiger.minecraft.unsafe.I
             }
             ChunkRegionLoader loadLoader = new ChunkRegionLoader(loadChunkDir);
             ChunkRegionLoader saveLoader = new ChunkRegionLoader(saveChunkDir);
-            return new InstanceChunkLoader(source, loadLoader, saveLoader);
+            return new InstanceChunkLoader(loadLoader, saveLoader);
         }
 
         @Override
         public File getDataFile(String string) {
-            if (source != null) {
-                source.save();
-            }
             File result = new File(this.loadDataFolder, string + ".dat");
             if (result.isFile()) {
                 return result;
@@ -314,12 +242,10 @@ public final class InstanceTools implements org.cyberiantiger.minecraft.unsafe.I
     // Safe not to extend ChunkRegionLoader - CB does not cast to ChunkRegionLoader anywhere.
     public static final class InstanceChunkLoader implements IChunkLoader, IAsyncChunkSaver {
 
-        private final World source;
         private final ChunkRegionLoader loadLoader;
         private final ChunkRegionLoader saveLoader;
 
-        public InstanceChunkLoader(World source, ChunkRegionLoader loadLoader, ChunkRegionLoader saveLoader) {
-            this.source = source;
+        public InstanceChunkLoader(ChunkRegionLoader loadLoader, ChunkRegionLoader saveLoader) {
             this.loadLoader = loadLoader;
             this.saveLoader = saveLoader;
         }
@@ -328,9 +254,6 @@ public final class InstanceTools implements org.cyberiantiger.minecraft.unsafe.I
         public Chunk a(net.minecraft.server.v1_7_R3.World world, int i, int j) {
             if (saveLoader.chunkExists(world, i, j)) {
                 return saveLoader.a(world, i, j);
-            }
-            if (source != null) {
-                source.save();
             }
             return loadLoader.a(world, i, j);
         }
