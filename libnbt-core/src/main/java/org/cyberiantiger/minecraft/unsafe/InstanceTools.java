@@ -15,8 +15,9 @@ import org.bukkit.plugin.Plugin;
  */
 public interface InstanceTools {
 
-    public World createInstance(Plugin plugin, Difficulty difficulty, String instanceWorldName, File source, File destination);
-
+    public World createInstance(Plugin plugin, String instanceWorldName, File source, File destination);
+    public World createInstance(Plugin plugin, String instanceWorldName, Difficulty difficulty, File source, File destination);
+    public World createInstance(Plugin plugin, String instanceWorldName, World.Environment env, Difficulty difficulty, File source, File destination);
     public void unloadWorld(Plugin plugin, World world);
     
 }

@@ -82,7 +82,7 @@ public final class InstanceTools extends AbstractInstanceTools {
     }
 
     @Override
-    public org.bukkit.World createInstance(final Plugin plugin, Difficulty difficulty, String instanceName, File source, File destination) {
+    public org.bukkit.World createInstance(final Plugin plugin, String instanceName, World.Environment env, Difficulty difficulty, File source, File destination) {
         checkDirectories(source, destination);
 
         MinecraftServer console = ((CraftServer) plugin.getServer()).getServer();
@@ -110,19 +110,6 @@ public final class InstanceTools extends AbstractInstanceTools {
         MethodProfiler profiler = console.methodProfiler;
 
         WorldData wd = dataManager.getWorldData();
-
-        World.Environment env;
-
-        switch (wd.j()) {
-            case 0:
-                env = World.Environment.NORMAL;
-            case -1:
-                env = World.Environment.NETHER;
-            case 1:
-                env = World.Environment.THE_END;
-            default:
-                env = World.Environment.NORMAL;
-        }
 
         ChunkGenerator generator = new VoidGenerator(Biome.PLAINS, new Coord(wd.c(),wd.d(),wd.e()));
 

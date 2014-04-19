@@ -5,6 +5,9 @@
 package org.cyberiantiger.minecraft.unsafe;
 
 import java.io.File;
+import org.bukkit.Difficulty;
+import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -45,5 +48,14 @@ public abstract class AbstractInstanceTools implements InstanceTools {
             throw new IllegalArgumentException("Destination directory " + destination + " cannot be written.");
         }
     }
-    
+
+    @Override
+    public World createInstance(Plugin plugin, String instanceWorldName, File source, File destination) {
+        return createInstance(plugin, instanceWorldName, Difficulty.NORMAL, source, destination);
+    }
+
+    @Override
+    public World createInstance(Plugin plugin, String instanceWorldName, Difficulty difficulty, File source, File destination) {
+        return createInstance(plugin, instanceWorldName, World.Environment.NORMAL, difficulty, source, destination);
+    }
 }
