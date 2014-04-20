@@ -5,7 +5,6 @@
 package org.cyberiantiger.minecraft.util;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  *
@@ -13,7 +12,7 @@ import java.io.IOException;
  */
 public class FileUtils {
     
-    public static boolean deleteRecursively(File file) throws IOException {
+    public static boolean deleteRecursively(File file) {
         if (file.isDirectory()) {
             boolean success = true;
             for (File child : file.listFiles()) {
