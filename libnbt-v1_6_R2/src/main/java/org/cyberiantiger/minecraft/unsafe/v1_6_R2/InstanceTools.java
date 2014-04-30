@@ -9,9 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.logging.Level;
 import net.minecraft.server.v1_6_R2.Chunk;
 import net.minecraft.server.v1_6_R2.ChunkRegionLoader;
@@ -28,8 +25,6 @@ import net.minecraft.server.v1_6_R2.WorldManager;
 import net.minecraft.server.v1_6_R2.WorldProvider;
 import net.minecraft.server.v1_6_R2.WorldServer;
 import net.minecraft.server.v1_6_R2.NBTCompressedStreamTools;
-import net.minecraft.server.v1_6_R2.RegionFile;
-import net.minecraft.server.v1_6_R2.RegionFileCache;
 import net.minecraft.server.v1_6_R2.ServerNBTManager;
 import net.minecraft.server.v1_6_R2.WorldProviderHell;
 import net.minecraft.server.v1_6_R2.WorldProviderTheEnd;
@@ -51,33 +46,7 @@ import org.cyberiantiger.minecraft.unsafe.AbstractInstanceTools;
  */
 public final class InstanceTools extends AbstractInstanceTools {
     public void unloadWorld(Plugin plugin, World world) {
-        try {
-            plugin.getServer().unloadWorld(world, false);
-            File folder = world.getWorldFolder();
-            Field field = RegionFileCache.class.getDeclaredField("a");
-            field.setAccessible(true);
-            Map<File,RegionFile> fileCache = (Map<File,RegionFile>) field.get(null);
-            Iterator<Map.Entry<File,RegionFile>> i = fileCache.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry<File,RegionFile> e = i.next();
-                if (isParent(folder, e.getKey())) {
-                    i.remove();
-                    try {
-                        e.getValue().c();
-                    } catch (IOException ex) {
-                        plugin.getLogger().log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        } catch (NoSuchFieldException ex) {
-            plugin.getLogger().log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            plugin.getLogger().log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            plugin.getLogger().log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            plugin.getLogger().log(Level.SEVERE, null, ex);
-        }
+        plugin.getServer().unloadWorld(world, false);
     }
 
     @Override
