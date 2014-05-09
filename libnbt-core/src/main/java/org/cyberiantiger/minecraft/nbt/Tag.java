@@ -30,6 +30,10 @@ public abstract class Tag<T> {
 
     @Override
     public String toString() {
-        return getName() + " = " + getValue().toString();
+        return getName() + " : " + String.valueOf(getValue());
+    }
+
+    public String toValueString() {
+        return String.valueOf(getValue());
     }
 }

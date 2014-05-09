@@ -17,9 +17,15 @@ public final class ListTag extends Tag<Tag[]> {
 
     public ListTag(String name, TagType listType, Tag[] value) {
         super(name);
-        Class c = value.getClass().getComponentType();
-        if (listType.getTagClass() != value.getClass().getComponentType())
-            throw new IllegalArgumentException("Tag class " + value.getClass().getComponentType().getName() + " is not " + listType.getTagClass());
+        if (listType == TagType.END) {
+            if (value != null) {
+                throw new IllegalArgumentException("Lists of TypeType.END must have null for their value");
+            }
+        } else {
+            Class c = value.getClass().getComponentType();
+            if (listType.getTagClass() != value.getClass().getComponentType())
+                throw new IllegalArgumentException("Tag class " + value.getClass().getComponentType().getName() + " is not " + listType.getTagClass());
+        }
         this.listType = listType;
         this.value = value;
     }
@@ -62,16 +68,23 @@ public final class ListTag extends Tag<Tag[]> {
     public String toString() {
         StringBuilder ret = new StringBuilder();
         ret.append(getName());
-        ret.append(" = [");
-        for (int i = 0; i < value.length; i++) {
-            ret.append(value[i].toString());
-            if (i != value.length-1) {
-                ret.append(", ");
-            }
-        }
-
-        ret.append(']');
+        ret.append(" : ");
+        ret.append(toValueString());
         return ret.toString();
     }
 
+    @Override
+    public String toValueString() {
+        StringBuilder ret = new StringBuilder('[');
+        if (value != null) {
+            for (int i = 0; i < value.length; i++) {
+                ret.append(value[i].toValueString());
+                if (i != value.length-1) {
+                    ret.append(", ");
+                }
+            }
+        }
+        ret.append(']');
+        return ret.toString();
+    }
 }

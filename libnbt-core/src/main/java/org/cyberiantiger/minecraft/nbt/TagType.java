@@ -119,20 +119,32 @@ public enum TagType {
             TagType type = ((ListTag) tag).getListType();
             Tag[] values = ((ListTag) tag).getValue();
             out.writeByte(type.ordinal());
-            out.writeInt(values.length);
-            for (int i = 0; i < values.length; i++) {
-                type.write(values[i], out);
+            if (values == null) {
+                out.writeInt(0);
+            } else {
+                out.writeInt(values.length);
+                for (int i = 0; i < values.length; i++) {
+                    type.write(values[i], out);
+                }
             }
         }
 
         public ListTag read(String name, TagInputStream in) throws IOException {
             TagType type = TagType.values()[in.readByte()];
             int length = in.readInt();
-            Tag[] value = (Tag[]) Array.newInstance(type.getTagClass(), length);
-            for (int i = 0; i < length; i++) {
-                value[i] = type.read(null, in);
+            if (type == TagType.END) {
+                if (length == 0 ) {
+                    return new ListTag(name, type, null);
+                } else {
+                    throw new IOException("Illegal list tag, had type of 0 and non-zero length");
+                }
+            } else {
+                Tag[] value = (Tag[]) Array.newInstance(type.getTagClass(), length);
+                for (int i = 0; i < length; i++) {
+                    value[i] = type.read(null, in);
+                }
+                return new ListTag(name, type, value);
             }
-            return new ListTag(name, type, value);
         }
     },
     COMPOUND(CompoundTag.class, Map.class) {
