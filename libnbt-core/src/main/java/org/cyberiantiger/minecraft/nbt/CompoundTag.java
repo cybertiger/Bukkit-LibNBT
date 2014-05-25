@@ -32,6 +32,11 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         return value.containsKey(key);
     }
 
+    public boolean containsKey(String key, TagType type) {
+        Tag t = value.get(key);
+        return t == null ? false : t.getType() == type;
+    }
+
     public void remove(String string) {
         value.remove(string);
     }
