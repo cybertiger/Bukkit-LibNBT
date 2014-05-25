@@ -30,6 +30,14 @@ public final class ListTag extends Tag<Tag[]> {
         this.value = value;
     }
 
+    public int size() {
+        return value.length;
+    }
+
+    public boolean isEmpty() {
+        return value.length == 0;
+    }
+
     @Override
     public Tag[] getValue() {
         return value;
