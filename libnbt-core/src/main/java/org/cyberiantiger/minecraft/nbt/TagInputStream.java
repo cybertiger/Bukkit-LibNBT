@@ -19,7 +19,11 @@ public class TagInputStream extends DataInputStream {
     }
 
     public Tag readTag() throws IOException {
-        TagType type = TagType.values()[readByte()];
+        int tagType = readByte() & 0xff;
+        if (tagType >= TagType.values().length) {
+            throw new IOException("Unknown tag type: " + tagType);
+        }
+        TagType type = TagType.values()[tagType];
         return type.read(type.readName(this), this);
     }
 
