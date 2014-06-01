@@ -358,7 +358,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
     public CompoundTag readEntity(Entity e) {
         net.minecraft.server.v1_5_R3.Entity handle = ((CraftEntity) e).getHandle();
         NBTTagCompound compound = new NBTTagCompound();
-        handle.d(compound);
+        handle.e(compound);
         return fromNativeCompound(compound);
     }
 
