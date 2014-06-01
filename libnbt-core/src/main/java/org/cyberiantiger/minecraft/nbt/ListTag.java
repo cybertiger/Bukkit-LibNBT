@@ -31,11 +31,11 @@ public final class ListTag extends Tag<Tag[]> {
     }
 
     public int size() {
-        return value.length;
+        return value == null ? 0 : value.length;
     }
 
     public boolean isEmpty() {
-        return value.length == 0;
+        return value == null || value.length == 0;
     }
 
     @Override
