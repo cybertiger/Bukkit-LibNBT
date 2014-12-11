@@ -4,6 +4,7 @@
  */
 package org.cyberiantiger.minecraft.unsafe;
 
+import java.util.UUID;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -16,7 +17,13 @@ import org.cyberiantiger.minecraft.nbt.CompoundTag;
  */
 public interface NBTTools {
 
+    public boolean isEntityByIdSupported();
+
+    public boolean isEntityByUuidSupported();
+
     public Entity getEntityById(World world, int id);
+
+    public Entity getEntityByUUID(World world, UUID id);
 
     public CompoundTag readEntity(Entity entity);
 
@@ -27,5 +34,7 @@ public interface NBTTools {
     public void writeTileEntity(Block b, CompoundTag tag);
 
     public CompoundTag readItemStack(ItemStack stack);
+
+    public ItemStack createItemStack(CompoundTag tag);
     
 }

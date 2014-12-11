@@ -8,6 +8,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.server.v1_5_R1.NBTBase;
@@ -355,6 +356,13 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
         return null;
     }
 
+    @Override
+    public ItemStack createItemStack(CompoundTag tag) {
+        net.minecraft.server.v1_5_R1.ItemStack nativeStack = new net.minecraft.server.v1_5_R1.ItemStack((net.minecraft.server.v1_5_R1.Item)null);
+        nativeStack.c(toNativeCompound(tag));
+        return CraftItemStack.asCraftMirror(nativeStack);
+    }
+
     public CompoundTag readEntity(Entity e) {
         net.minecraft.server.v1_5_R1.Entity handle = ((CraftEntity) e).getHandle();
         NBTTagCompound compound = new NBTTagCompound();
@@ -375,5 +383,20 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
         if (entity == null)
             return null;
         return entity.getBukkitEntity();
+    }
+
+    @Override
+    public boolean isEntityByIdSupported() {
+        return true;
+    }
+
+    @Override
+    public boolean isEntityByUuidSupported() {
+        return false;
+    }
+
+    @Override
+    public Entity getEntityByUUID(World world, UUID id) {
+        throw new UnsupportedOperationException("Not supported.");
     }
 }
