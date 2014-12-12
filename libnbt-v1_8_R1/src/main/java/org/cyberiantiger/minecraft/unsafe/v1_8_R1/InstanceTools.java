@@ -9,7 +9,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.minecraft.server.v1_8_R1.Chunk;
 import net.minecraft.server.v1_8_R1.ChunkRegionLoader;
 import net.minecraft.server.v1_8_R1.EntityTracker;
@@ -26,6 +28,7 @@ import net.minecraft.server.v1_8_R1.WorldManager;
 import net.minecraft.server.v1_8_R1.WorldProvider;
 import net.minecraft.server.v1_8_R1.WorldServer;
 import net.minecraft.server.v1_8_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_8_R1.SecondaryWorldServer;
 import net.minecraft.server.v1_8_R1.ServerNBTManager;
 import net.minecraft.server.v1_8_R1.WorldProviderHell;
 import net.minecraft.server.v1_8_R1.WorldProviderTheEnd;
@@ -82,13 +85,14 @@ public final class InstanceTools extends AbstractInstanceTools {
 
         ChunkGenerator generator = new VoidGenerator(Biome.PLAINS, new Coord(wd.c(),wd.d(),wd.e()));
 
-        WorldServer instanceWorld = new WorldServer(console, dataManager, wd, dimension, console.methodProfiler, env, generator);
+        WorldServer instanceWorld = (WorldServer) new WorldServer(console, dataManager, wd, dimension, console.methodProfiler, env, generator).b();
 
         instanceWorld.worldMaps = console.worlds.get(0).worldMaps;
         instanceWorld.tracker = new EntityTracker(instanceWorld);
         instanceWorld.addIWorldAccess((IWorldAccess) new WorldManager(console, instanceWorld));
         // EnumDifficulty and Difficulty have same order of enum values.
         instanceWorld.getWorldData().setDifficulty(EnumDifficulty.values()[difficulty.ordinal()]);
+        instanceWorld.setSpawnFlags(true, true);
         instanceWorld.keepSpawnInMemory = false;
         console.worlds.add(instanceWorld);
 
