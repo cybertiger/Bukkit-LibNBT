@@ -32,6 +32,7 @@ import net.minecraft.server.v1_8_R1.SecondaryWorldServer;
 import net.minecraft.server.v1_8_R1.ServerNBTManager;
 import net.minecraft.server.v1_8_R1.WorldProviderHell;
 import net.minecraft.server.v1_8_R1.WorldProviderTheEnd;
+import org.bukkit.craftbukkit.v1_8_R1.scoreboard.CraftScoreboard;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -87,7 +88,8 @@ public final class InstanceTools extends AbstractInstanceTools {
 
         WorldServer instanceWorld = (WorldServer) new WorldServer(console, dataManager, wd, dimension, console.methodProfiler, env, generator).b();
 
-        instanceWorld.worldMaps = console.worlds.get(0).worldMaps;
+        instanceWorld.scoreboard = ((CraftScoreboard)plugin.getServer().getScoreboardManager().getMainScoreboard()).getHandle();
+
         instanceWorld.tracker = new EntityTracker(instanceWorld);
         instanceWorld.addIWorldAccess((IWorldAccess) new WorldManager(console, instanceWorld));
         // EnumDifficulty and Difficulty have same order of enum values.
