@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.minecraft.server.v1_8_R1.Chunk;
 import net.minecraft.server.v1_8_R1.ChunkRegionLoader;
 import net.minecraft.server.v1_8_R1.EntityTracker;
@@ -28,7 +26,6 @@ import net.minecraft.server.v1_8_R1.WorldManager;
 import net.minecraft.server.v1_8_R1.WorldProvider;
 import net.minecraft.server.v1_8_R1.WorldServer;
 import net.minecraft.server.v1_8_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_8_R1.SecondaryWorldServer;
 import net.minecraft.server.v1_8_R1.ServerNBTManager;
 import net.minecraft.server.v1_8_R1.WorldProviderHell;
 import net.minecraft.server.v1_8_R1.WorldProviderTheEnd;
@@ -138,26 +135,32 @@ public final class InstanceTools extends AbstractInstanceTools {
             File file1 = new File(loadDataFolder, WORLD_DATA);
             NBTTagCompound nbttagcompound;
             NBTTagCompound nbttagcompound1;
+
+            WorldData result = null;
             
             if (file1.exists()) {
                 try {
                     nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(file1)));
                     nbttagcompound1 = nbttagcompound.getCompound("Data");
-                    return new WorldData(nbttagcompound1);
+                    result = new WorldData(nbttagcompound1);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
-            }
-            
-            file1 = new File(loadDataFolder, WORLD_DATA_OLD);
-            if (file1.exists()) {
-                try {
-                    nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(file1)));
-                    nbttagcompound1 = nbttagcompound.getCompound("Data");
-                    return new WorldData(nbttagcompound1);
-                } catch (Exception exception1) {
-                    exception1.printStackTrace();
+            } else {
+                file1 = new File(loadDataFolder, WORLD_DATA_OLD);
+                if (file1.exists()) {
+                    try {
+                        nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(file1)));
+                        nbttagcompound1 = nbttagcompound.getCompound("Data");
+                        result = new WorldData(nbttagcompound1);
+                    } catch (Exception exception1) {
+                        exception1.printStackTrace();
+                    }
                 }
+            }
+
+            if (result != null) {
+                result.a(world);
             }
             
             return null;
