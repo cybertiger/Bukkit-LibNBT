@@ -163,7 +163,7 @@ public final class InstanceTools extends AbstractInstanceTools {
                 result.a(world);
             }
             
-            return null;
+            return result;
         }
 
         @Override
