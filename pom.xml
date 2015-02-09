@@ -20,6 +20,9 @@
         <module>libnbt-v1_8_R1</module>
         <module>libnbt</module>
     </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <scm>
         <url>https://github.com/cybertiger/Bukkit-LibNBT/</url>
         <connection>scm:git:git://github.com/cybertiger/Bukkit-LibNBT.git</connection>
