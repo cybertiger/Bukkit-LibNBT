@@ -27,9 +27,13 @@ public class TagOutputStream extends DataOutputStream {
     }
 
     public <T extends Tag> void writeTag(T tag) throws IOException {
-        TagType type = tag.getType();
-        writeByte(type.ordinal());
-        type.writeName(tag.getName(), this);
-        type.write(tag, this);
+        if (tag == null) {
+            writeByte(TagType.END.ordinal());
+        } else {
+            TagType type = tag.getType();
+            writeByte(type.ordinal());
+            type.writeName(tag.getName(), this);
+            type.write(tag, this);
+        }
     }
 }
