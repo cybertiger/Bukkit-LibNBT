@@ -4,32 +4,16 @@
  */
 package org.cyberiantiger.minecraft.unsafe.v1_8_R2;
 
-import com.google.common.io.Files;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import net.minecraft.server.v1_8_R2.Chunk;
-import net.minecraft.server.v1_8_R2.ChunkRegionLoader;
 import net.minecraft.server.v1_8_R2.EntityTracker;
 import net.minecraft.server.v1_8_R2.EnumDifficulty;
-import net.minecraft.server.v1_8_R2.ExceptionWorldConflict;
-import net.minecraft.server.v1_8_R2.IAsyncChunkSaver;
-import net.minecraft.server.v1_8_R2.IChunkLoader;
 import net.minecraft.server.v1_8_R2.IDataManager;
 import net.minecraft.server.v1_8_R2.IWorldAccess;
 import net.minecraft.server.v1_8_R2.MethodProfiler;
 import net.minecraft.server.v1_8_R2.MinecraftServer;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
 import net.minecraft.server.v1_8_R2.WorldData;
 import net.minecraft.server.v1_8_R2.WorldManager;
-import net.minecraft.server.v1_8_R2.WorldProvider;
 import net.minecraft.server.v1_8_R2.WorldServer;
-import net.minecraft.server.v1_8_R2.NBTCompressedStreamTools;
-import net.minecraft.server.v1_8_R2.ServerNBTManager;
-import net.minecraft.server.v1_8_R2.WorldProviderHell;
-import net.minecraft.server.v1_8_R2.WorldProviderTheEnd;
 import org.bukkit.craftbukkit.v1_8_R2.scoreboard.CraftScoreboard;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
@@ -102,154 +86,5 @@ public final class InstanceTools extends AbstractInstanceTools {
         plugin.getServer().getPluginManager().callEvent(new WorldLoadEvent(instanceWorld.getWorld()));
 
         return instanceWorld.getWorld();
-    }
-
-    // Have to extend WorldNBTStorage - CB casts IDataManager to it in World.getWorldFolder()
-    // cannot just implement IDataManager, PlayerFileData
-    private static class InstanceDataManager extends ServerNBTManager {
-        private static final String WORLD_DATA = "level.dat";
-        private static final String WORLD_DATA_OLD = "level.dat_old";
-
-        private final Plugin instances;
-        private final File loadDataFolder;
-        private final String world;
-
-        public InstanceDataManager(Plugin instances, String instanceName, File loadDataFolder, File saveDataFolder) {
-            // false flag - do not create players directory.
-            super(saveDataFolder.getParentFile(), saveDataFolder.getName(), false);
-            this.instances = instances;
-            this.loadDataFolder = loadDataFolder;
-            this.world = instanceName;
-        }
-
-        @Override
-        public WorldData getWorldData() {
-            File levelData = new File(getDirectory(), WORLD_DATA);
-            if (levelData.isFile()) {
-                return super.getWorldData();
-            }
-            levelData = new File(getDirectory(), WORLD_DATA_OLD);
-            if (levelData.isFile()) {
-                return super.getWorldData();
-            }
-            
-            File file1 = new File(loadDataFolder, WORLD_DATA);
-            NBTTagCompound nbttagcompound;
-            NBTTagCompound nbttagcompound1;
-
-            WorldData result = null;
-            
-            if (file1.exists()) {
-                try {
-                    nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(file1)));
-                    nbttagcompound1 = nbttagcompound.getCompound("Data");
-                    result = new WorldData(nbttagcompound1);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-            } else {
-                file1 = new File(loadDataFolder, WORLD_DATA_OLD);
-                if (file1.exists()) {
-                    try {
-                        nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(file1)));
-                        nbttagcompound1 = nbttagcompound.getCompound("Data");
-                        result = new WorldData(nbttagcompound1);
-                    } catch (Exception exception1) {
-                        exception1.printStackTrace();
-                    }
-                }
-            }
-
-            if (result != null) {
-                result.a(world);
-            }
-            
-            return result;
-        }
-
-        @Override
-        public IChunkLoader createChunkLoader(WorldProvider wp) {
-            File loadChunkDir;
-            File saveChunkDir;
-            if (wp instanceof WorldProviderHell) {
-                loadChunkDir = new File(loadDataFolder, "DIM-1");
-                saveChunkDir = new File(getDirectory(), "DIM-1");
-            } else if (wp instanceof WorldProviderTheEnd) {
-                loadChunkDir = new File(loadDataFolder, "DIM1");
-                saveChunkDir = new File(getDirectory(), "DIM1");
-            } else {
-                loadChunkDir = loadDataFolder;
-                saveChunkDir = getDirectory();
-            }
-            ChunkRegionLoader loadLoader = new ChunkRegionLoader(loadChunkDir);
-            ChunkRegionLoader saveLoader = new ChunkRegionLoader(saveChunkDir);
-            return new InstanceChunkLoader(loadLoader, saveLoader);
-        }
-
-        @Override
-        public File getDataFile(String string) {
-            File result = new File(this.loadDataFolder, string + ".dat");
-            if (result.isFile()) {
-                return result;
-            }
-            File source = new File(getDirectory(), string + ".dat");
-            if (!source.isFile()) {
-                return result;
-            }
-            try {
-                Files.copy(source, result);
-            } catch (IOException ex) {
-                instances.getLogger().log(Level.SEVERE, "Error copying " + source.getPath() + " to " + result.getPath() + " for Instance world: " + world, ex);
-            }
-            return result;
-        }
-    }
-
-    // Safe not to extend ChunkRegionLoader - CB does not cast to ChunkRegionLoader anywhere.
-    public static final class InstanceChunkLoader implements IChunkLoader, IAsyncChunkSaver {
-
-        private final ChunkRegionLoader loadLoader;
-        private final ChunkRegionLoader saveLoader;
-
-        public InstanceChunkLoader(ChunkRegionLoader loadLoader, ChunkRegionLoader saveLoader) {
-            this.loadLoader = loadLoader;
-            this.saveLoader = saveLoader;
-        }
-
-        @Override
-        public Chunk a(net.minecraft.server.v1_8_R2.World world, int i, int j) throws IOException {
-            if (saveLoader.chunkExists(world, i, j)) {
-                return saveLoader.a(world, i, j);
-            }
-            return loadLoader.a(world, i, j);
-        }
-
-        @Override
-        public void a(net.minecraft.server.v1_8_R2.World world, Chunk chunk) throws IOException, ExceptionWorldConflict {
-            saveLoader.a(world, chunk);
-        }
-
-        @Override
-        public void b(net.minecraft.server.v1_8_R2.World world, Chunk chunk) throws IOException {
-            // Assume this is supposed to be some sort of save operation.
-            // Can't tell from NMS - empty method.
-            saveLoader.b(world, chunk);
-        }
-
-        @Override
-        public void a() {
-            // XXX: Can't guess if this is a save or load operation.
-        }
-
-        @Override
-        public void b() {
-            // XXX: Can't guess if this is a save or load operation.
-        }
-
-        @Override
-        public boolean c() {
-            // Looks like a flush() / sync() method.
-            return saveLoader.c();
-        }
     }
 }
