@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cyberiantiger.minecraft</groupId>
     <artifactId>libnbt-parent</artifactId>
-    <version>1.22-SNAPSHOT</version>
+    <version>1.22</version>
     <packaging>pom</packaging>
     <modules>
         <module>libnbt-core</module>
@@ -23,6 +23,8 @@
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Javadoc is broken -->
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     </properties>
     <scm>
         <url>https://github.com/cybertiger/Bukkit-LibNBT/</url>
