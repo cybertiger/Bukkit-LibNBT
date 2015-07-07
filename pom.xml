@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cyberiantiger.minecraft</groupId>
     <artifactId>libnbt-parent</artifactId>
-    <version>1.26</version>
+    <version>1.27-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>libnbt-core</module>
