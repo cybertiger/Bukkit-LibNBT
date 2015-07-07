@@ -31,4 +31,8 @@ public final class ShortTag extends Tag<Short> {
         return TagType.SHORT;
     }
 
+    @Override
+    public String toValueString() {
+        return "" + getRawValue() + 's';
+    }
 }

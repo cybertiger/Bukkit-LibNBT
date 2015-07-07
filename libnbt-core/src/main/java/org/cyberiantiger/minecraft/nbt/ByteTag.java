@@ -31,4 +31,8 @@ public final class ByteTag extends Tag<Byte> {
         return TagType.BYTE;
     }
 
+    @Override
+    public String toValueString() {
+        return "" + getRawValue() + 'b';
+    }
 }

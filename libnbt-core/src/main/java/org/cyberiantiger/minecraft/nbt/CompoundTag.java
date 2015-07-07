@@ -163,7 +163,8 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
 
     @Override
     public String toValueString() {
-        StringBuilder ret = new StringBuilder('{');
+        StringBuilder ret = new StringBuilder();
+        ret.append('{');
         for (Map.Entry<String, Tag> t : value.entrySet()) {
             ret.append(t.getValue());
             ret.append(", ");

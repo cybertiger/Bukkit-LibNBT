@@ -26,4 +26,22 @@ public final class StringTag extends Tag<String> {
         return TagType.STRING;
     }
 
+    @Override
+    public String toValueString() {
+        String s = getValue();
+        StringBuilder ret = new StringBuilder(s.length() + 4);
+        ret.append('"');
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (ch == '"') {
+                ret.append("\\\"");
+            } else {
+                ret.append(ch);
+            }
+        }
+        ret.append('"');
+        return ret.toString();
+    }
+            
+
 }

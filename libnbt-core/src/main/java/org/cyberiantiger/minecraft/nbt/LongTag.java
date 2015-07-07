@@ -30,4 +30,10 @@ public final class LongTag extends Tag<Long> {
     public TagType getType() {
         return TagType.LONG;
     }
+
+    @Override
+    public String toValueString() {
+        return "" + getRawValue() + 'l';
+    }
+    
 }

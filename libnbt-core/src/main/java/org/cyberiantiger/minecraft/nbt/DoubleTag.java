@@ -29,4 +29,11 @@ public final class DoubleTag extends Tag {
     public TagType getType() {
         return TagType.DOUBLE;
     }
+
+    @Override
+    public String toValueString() {
+        return "" + getRawValue() + 'd';
+    }
+
+    
 }

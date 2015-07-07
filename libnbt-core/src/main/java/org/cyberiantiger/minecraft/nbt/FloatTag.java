@@ -31,4 +31,10 @@ public final class FloatTag extends Tag {
         return TagType.FLOAT;
     }
 
+    @Override
+    public String toValueString() {
+        return "" + getRawValue() + 'f';
+    }
+
+    
 }
