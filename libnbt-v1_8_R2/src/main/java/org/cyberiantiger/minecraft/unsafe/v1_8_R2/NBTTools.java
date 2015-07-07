@@ -360,29 +360,10 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
 
     @Override
     public CompoundTag readItemStack(ItemStack stack) {
-        CraftItemStack craftStack;
-        if (stack instanceof CraftItemStack) {
-            craftStack = (CraftItemStack)stack;
-        } else{
-            craftStack = CraftItemStack.asCraftCopy(stack);
-        }
-        try {
-            Field f = CraftItemStack.class.getDeclaredField("handle");
-            f.setAccessible(true);
-            net.minecraft.server.v1_8_R2.ItemStack nativeStack = (net.minecraft.server.v1_8_R2.ItemStack) f.get(craftStack);
-            NBTTagCompound compound = new NBTTagCompound();
-            nativeStack.save(compound);
-            return fromNativeCompound(compound);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchFieldException ex) {
-            Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        net.minecraft.server.v1_8_R2.ItemStack nativeStack = CraftItemStack.asNMSCopy(stack);
+        NBTTagCompound compound = new NBTTagCompound();
+        nativeStack.save(compound);
+        return fromNativeCompound(compound);
     }
 
     @Override
