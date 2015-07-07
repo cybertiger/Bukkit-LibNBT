@@ -29,7 +29,7 @@ public final class IntArrayTag extends Tag<int[]> {
     @Override
     public String toValueString() {
         StringBuilder ret = new StringBuilder();
-        ret.append('[');
+        ret.append('«');
         int[] v = getValue();
         for (int i = 0; i < v.length; i++) {
             if (i != 0) {
@@ -37,7 +37,7 @@ public final class IntArrayTag extends Tag<int[]> {
             }
             ret.append(v[i]);
         }
-        ret.append(']');
+        ret.append('»');
         return ret.toString();
     }
 }

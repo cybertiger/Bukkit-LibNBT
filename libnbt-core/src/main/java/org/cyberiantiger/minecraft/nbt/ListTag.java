@@ -83,7 +83,8 @@ public final class ListTag extends Tag<Tag[]> {
 
     @Override
     public String toValueString() {
-        StringBuilder ret = new StringBuilder('[');
+        StringBuilder ret = new StringBuilder();
+        ret.append('[');
         if (value != null) {
             for (int i = 0; i < value.length; i++) {
                 ret.append(value[i].toValueString());
