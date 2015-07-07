@@ -369,6 +369,9 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
     @Override
     public ItemStack createItemStack(CompoundTag tag) {
         net.minecraft.server.v1_8_R1.ItemStack nativeStack = new net.minecraft.server.v1_8_R1.ItemStack((net.minecraft.server.v1_8_R1.Item)null);
+        if (nativeStack == null) {
+            return null;
+        }
         nativeStack.c(toNativeCompound(tag));
         return CraftItemStack.asCraftMirror(nativeStack);
     }

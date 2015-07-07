@@ -361,6 +361,8 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
     @Override
     public CompoundTag readItemStack(ItemStack stack) {
         net.minecraft.server.v1_8_R3.ItemStack nativeStack = CraftItemStack.asNMSCopy(stack);
+        if (nativeStack == null) 
+            return null;
         NBTTagCompound compound = new NBTTagCompound();
         nativeStack.save(compound);
         return fromNativeCompound(compound);
