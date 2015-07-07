@@ -35,6 +35,4 @@ public final class FloatTag extends Tag {
     public String toValueString() {
         return "" + getRawValue() + 'f';
     }
-
-    
 }

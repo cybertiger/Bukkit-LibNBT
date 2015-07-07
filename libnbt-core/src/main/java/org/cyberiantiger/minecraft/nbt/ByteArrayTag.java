@@ -25,4 +25,19 @@ public final class ByteArrayTag extends Tag<byte[]> {
     public TagType getType() {
         return TagType.BYTE_ARRAY;
     }
+
+    @Override
+    public String toValueString() {
+        StringBuilder ret = new StringBuilder();
+        ret.append('<');
+        byte[] v = getValue();
+        for (int i = 0; i < v.length; i++) {
+            if (i != 0) {
+                ret.append(", ");
+            }
+            ret.append(v[i]);
+        }
+        ret.append('>');
+        return ret.toString();
+    }
 }

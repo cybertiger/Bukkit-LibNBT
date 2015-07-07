@@ -26,6 +26,18 @@ public final class IntArrayTag extends Tag<int[]> {
         return TagType.INT_ARRAY;
     }
 
-
-
+    @Override
+    public String toValueString() {
+        StringBuilder ret = new StringBuilder();
+        ret.append('[');
+        int[] v = getValue();
+        for (int i = 0; i < v.length; i++) {
+            if (i != 0) {
+                ret.append(", ");
+            }
+            ret.append(v[i]);
+        }
+        ret.append(']');
+        return ret.toString();
+    }
 }
