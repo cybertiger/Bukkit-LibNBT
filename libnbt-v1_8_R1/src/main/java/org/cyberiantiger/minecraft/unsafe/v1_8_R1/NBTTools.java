@@ -360,10 +360,16 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
 
     @Override
     public CompoundTag readItemStack(ItemStack stack) {
+        CraftItemStack craftStack;
+        if (stack instanceof CraftItemStack) {
+            craftStack = (CraftItemStack)stack;
+        } else{
+            craftStack = CraftItemStack.asCraftCopy(stack);
+        }
         try {
             Field f = CraftItemStack.class.getDeclaredField("handle");
             f.setAccessible(true);
-            net.minecraft.server.v1_8_R1.ItemStack nativeStack = (net.minecraft.server.v1_8_R1.ItemStack) f.get(stack);
+            net.minecraft.server.v1_8_R1.ItemStack nativeStack = (net.minecraft.server.v1_8_R1.ItemStack) f.get(craftStack);
             NBTTagCompound compound = new NBTTagCompound();
             nativeStack.save(compound);
             return fromNativeCompound(compound);
