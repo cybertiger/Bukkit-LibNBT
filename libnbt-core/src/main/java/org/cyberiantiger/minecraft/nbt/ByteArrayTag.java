@@ -5,14 +5,15 @@
 
 package org.cyberiantiger.minecraft.nbt;
 
+import java.util.Arrays;
+
 /**
  *
  * @author antony
  */
 public final class ByteArrayTag extends Tag<byte[]> {
     private final byte[] value;
-    public ByteArrayTag(String name, byte[] value) {
-        super(name);
+    public ByteArrayTag(byte[] value) {
         this.value = value;
     }
 
@@ -27,7 +28,7 @@ public final class ByteArrayTag extends Tag<byte[]> {
     }
 
     @Override
-    public String toValueString() {
+    public String toString() {
         StringBuilder ret = new StringBuilder();
         ret.append('<');
         byte[] v = getValue();

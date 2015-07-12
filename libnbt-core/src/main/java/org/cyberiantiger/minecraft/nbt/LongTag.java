@@ -12,8 +12,7 @@ package org.cyberiantiger.minecraft.nbt;
 public final class LongTag extends Tag<Long> {
     private final long value;
 
-    public LongTag(String name, long value) {
-        super(name);
+    public LongTag(long value) {
         this.value = value;
     }
 
@@ -32,7 +31,7 @@ public final class LongTag extends Tag<Long> {
     }
 
     @Override
-    public String toValueString() {
+    public String toString() {
         return "" + getRawValue() + 'l';
     }
     

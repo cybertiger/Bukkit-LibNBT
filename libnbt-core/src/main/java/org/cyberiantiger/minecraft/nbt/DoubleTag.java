@@ -11,8 +11,7 @@ package org.cyberiantiger.minecraft.nbt;
  */
 public final class DoubleTag extends Tag {
     private final double value;
-    public DoubleTag(String name, double value) {
-        super(name);
+    public DoubleTag(double value) {
         this.value = value;
     }
 
@@ -31,7 +30,7 @@ public final class DoubleTag extends Tag {
     }
 
     @Override
-    public String toValueString() {
+    public String toString() {
         return "" + getRawValue() + 'd';
     }
 

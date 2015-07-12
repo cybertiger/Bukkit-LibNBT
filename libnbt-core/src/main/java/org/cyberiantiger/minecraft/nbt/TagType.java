@@ -10,8 +10,8 @@ public enum TagType {
 
     END(null, null) {
 
-        public Tag read(String name, TagInputStream in) throws IOException {
-            return null;
+        public Tag read(TagInputStream in) throws IOException {
+            return EndTag.VALUE;
         }
 
         public void write(Tag tag, TagOutputStream out) throws IOException {
@@ -34,8 +34,8 @@ public enum TagType {
             out.writeByte(((ByteTag) tag).getRawValue());
         }
 
-        public ByteTag read(String name, TagInputStream in) throws IOException {
-            return new ByteTag(name, in.readByte());
+        public ByteTag read(TagInputStream in) throws IOException {
+            return new ByteTag(in.readByte());
         }
     },
     SHORT(ShortTag.class, Short.class) {
@@ -44,8 +44,8 @@ public enum TagType {
             out.writeShort(((ShortTag) tag).getRawValue());
         }
 
-        public ShortTag read(String name, TagInputStream in) throws IOException {
-            return new ShortTag(name, in.readShort());
+        public ShortTag read(TagInputStream in) throws IOException {
+            return new ShortTag(in.readShort());
         }
     },
     INT(IntTag.class, Integer.class) {
@@ -54,8 +54,8 @@ public enum TagType {
             out.writeInt(((IntTag) tag).getRawValue());
         }
 
-        public IntTag read(String name, TagInputStream in) throws IOException {
-            return new IntTag(name, in.readInt());
+        public IntTag read(TagInputStream in) throws IOException {
+            return new IntTag(in.readInt());
         }
     },
     LONG(LongTag.class, Long.class) {
@@ -64,8 +64,8 @@ public enum TagType {
             out.writeLong(((LongTag) tag).getRawValue());
         }
 
-        public LongTag read(String name, TagInputStream in) throws IOException {
-            return new LongTag(name, in.readLong());
+        public LongTag read(TagInputStream in) throws IOException {
+            return new LongTag(in.readLong());
         }
     },
     FLOAT(FloatTag.class, Float.class) {
@@ -74,8 +74,8 @@ public enum TagType {
             out.writeFloat(((FloatTag) tag).getRawValue());
         }
 
-        public FloatTag read(String name, TagInputStream in) throws IOException {
-            return new FloatTag(name, in.readFloat());
+        public FloatTag read(TagInputStream in) throws IOException {
+            return new FloatTag(in.readFloat());
         }
     },
     DOUBLE(DoubleTag.class, Double.class) {
@@ -84,8 +84,8 @@ public enum TagType {
             out.writeDouble(((DoubleTag) tag).getRawValue());
         }
 
-        public DoubleTag read(String name, TagInputStream in) throws IOException {
-            return new DoubleTag(name, in.readDouble());
+        public DoubleTag read(TagInputStream in) throws IOException {
+            return new DoubleTag(in.readDouble());
         }
     },
     BYTE_ARRAY(ByteArrayTag.class, byte[].class) {
@@ -96,11 +96,11 @@ public enum TagType {
             out.write(data);
         }
 
-        public ByteArrayTag read(String name, TagInputStream in) throws IOException {
+        public ByteArrayTag read(TagInputStream in) throws IOException {
             int length = in.readInt();
             byte[] value = new byte[length];
             in.readFully(value);
-            return new ByteArrayTag(name, value);
+            return new ByteArrayTag(value);
         }
     },
     STRING(StringTag.class, String.class) {
@@ -109,8 +109,8 @@ public enum TagType {
             out.writeMCString(((StringTag) tag).getValue());
         }
 
-        public StringTag read(String name, TagInputStream in) throws IOException {
-            return new StringTag(name, in.readMCString());
+        public StringTag read(TagInputStream in) throws IOException {
+            return new StringTag(in.readMCString());
         }
     },
     LIST(ListTag.class, Tag[].class) {
@@ -129,41 +129,43 @@ public enum TagType {
             }
         }
 
-        public ListTag read(String name, TagInputStream in) throws IOException {
+        public ListTag read(TagInputStream in) throws IOException {
             TagType type = TagType.values()[in.readByte()];
             int length = in.readInt();
             if (type == TagType.END) {
                 if (length == 0 ) {
-                    return new ListTag(name, type, null);
+                    return new ListTag(type, null);
                 } else {
                     throw new IOException("Illegal list tag, had type of 0 and non-zero length");
                 }
             } else {
                 Tag[] value = (Tag[]) Array.newInstance(type.getTagClass(), length);
                 for (int i = 0; i < length; i++) {
-                    value[i] = type.read(null, in);
+                    value[i] = type.read(in);
                 }
-                return new ListTag(name, type, value);
+                return new ListTag(type, value);
             }
         }
     },
     COMPOUND(CompoundTag.class, Map.class) {
 
         public void write(Tag tag, TagOutputStream out) throws IOException {
-            Collection<Tag> tags = ((CompoundTag) tag).getValue().values();
-            for (Tag t : tags) {
-                out.writeTag(t);
+            for (Map.Entry<String, Tag> e : ((CompoundTag)tag).getValue().entrySet()) {
+                out.writeTag(e);
             }
-            out.writeByte(TagType.END.ordinal());
+            out.writeTag(EndTag.TUPLE);
         }
 
-        public CompoundTag read(String name, TagInputStream in) throws IOException {
+        public CompoundTag read(TagInputStream in) throws IOException {
             Map<String, Tag> values = new HashMap<String, Tag>();
-            Tag tag;
-            while ((tag = in.readTag()) != null) {
-                values.put(tag.getName(), tag);
+            while (true) {
+                TagTuple<? extends Tag> tag = in.readTag();
+                if (tag.getValue().getType() == TagType.END) {
+                    break;
+                }
+                values.put(tag.getKey(), tag.getValue());
             }
-            return new CompoundTag(name, values);
+            return new CompoundTag(values);
         }
     },
     INT_ARRAY(IntArrayTag.class, int[].class) {
@@ -176,13 +178,13 @@ public enum TagType {
             }
         }
 
-        public IntArrayTag read(String name, TagInputStream in) throws IOException {
+        public IntArrayTag read(TagInputStream in) throws IOException {
             int length = in.readInt();
             int[] value = new int[length];
             for (int i = 0; i < length; i++) {
                 value[i] = in.readInt();
             }
-            return new IntArrayTag(name, value);
+            return new IntArrayTag(value);
         }
     };
     
@@ -202,7 +204,7 @@ public enum TagType {
         return valueClass;
     }
 
-    public abstract <T extends Tag> T read(String name, TagInputStream in) throws IOException;
+    public abstract <T extends Tag> T read(TagInputStream in) throws IOException;
 
     public String readName(TagInputStream in) throws IOException {
         return in.readMCString();

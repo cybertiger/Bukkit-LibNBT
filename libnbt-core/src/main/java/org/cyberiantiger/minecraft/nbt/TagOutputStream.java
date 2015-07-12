@@ -8,6 +8,7 @@ package org.cyberiantiger.minecraft.nbt;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 /**
  *
@@ -26,14 +27,12 @@ public class TagOutputStream extends DataOutputStream {
         write(data);
     }
 
-    public <T extends Tag> void writeTag(T tag) throws IOException {
-        if (tag == null) {
-            writeByte(TagType.END.ordinal());
-        } else {
-            TagType type = tag.getType();
-            writeByte(type.ordinal());
-            type.writeName(tag.getName(), this);
-            type.write(tag, this);
-        }
+    public <T extends Tag> void writeTag(Map.Entry<String,T> e) throws IOException {
+        String name = e.getKey();
+        Tag<T> value = e.getValue();
+        TagType type = value.getType();
+        writeByte(type.ordinal());
+        type.writeName(name, this);
+        type.write(value, this);
     }
 }

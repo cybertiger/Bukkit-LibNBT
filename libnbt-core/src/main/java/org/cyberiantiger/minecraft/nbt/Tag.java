@@ -14,26 +14,14 @@ import java.nio.charset.Charset;
 public abstract class Tag<T> {
     public static final Charset CHARSET = Charset.forName("UTF-8");
 
-    private final String name;
-
-    protected Tag(String name) {
-        this.name = name;
+    protected Tag() {
     }
     
-    public String getName() {
-        return name;
-    }
-
     public abstract T getValue();
 
     public abstract TagType getType();
 
-    @Override
     public String toString() {
-        return getName() + " : " + toValueString();
-    }
-
-    public String toValueString() {
         return String.valueOf(getValue());
     }
 }

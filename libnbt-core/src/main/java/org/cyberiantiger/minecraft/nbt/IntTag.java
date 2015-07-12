@@ -13,8 +13,7 @@ public final class IntTag extends Tag<Integer> {
 
     private final int value;
 
-    public IntTag(String name, int value) {
-        super (name);
+    public IntTag(int value) {
         this.value = value;
     }
 

@@ -12,8 +12,7 @@ package org.cyberiantiger.minecraft.nbt;
 public final class ByteTag extends Tag<Byte> {
     private final byte value;
 
-    public ByteTag(String name, byte value) {
-        super (name);
+    public ByteTag(byte value) {
         this.value = value;
     }
 
@@ -32,7 +31,7 @@ public final class ByteTag extends Tag<Byte> {
     }
 
     @Override
-    public String toValueString() {
+    public String toString() {
         return "" + getRawValue() + 'b';
     }
 }

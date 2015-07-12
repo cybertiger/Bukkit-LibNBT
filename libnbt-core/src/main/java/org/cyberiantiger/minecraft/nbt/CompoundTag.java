@@ -16,15 +16,10 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     private final Map<String, Tag> value;
 
     public CompoundTag() {
-        this(null);
+        this(new HashMap<String, Tag>());
     }
 
-    public CompoundTag(String name) {
-        this(name, new HashMap<String, Tag>());
-    }
-
-    public CompoundTag(String name, Map<String, Tag> value) {
-        super(name);
+    public CompoundTag(Map<String, Tag> value) {
         this.value = value;
     }
 
@@ -47,7 +42,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setByte(String name, byte b) {
-        value.put(name, new ByteTag(name, b));
+        value.put(name, new ByteTag(b));
     }
 
     public byte[] getByteArray(String name) {
@@ -56,7 +51,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setByteArray(String name, byte[] b) {
-        value.put(name, new ByteArrayTag(name, b));
+        value.put(name, new ByteArrayTag(b));
     }
 
     public CompoundTag getCompound(String name) {
@@ -64,7 +59,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setCompound(String name) {
-        setCompound(name, new CompoundTag(name));
+        setCompound(name, new CompoundTag());
     }
 
     public void setCompound(String name, CompoundTag c) {
@@ -77,7 +72,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setDouble(String name, double d) {
-        value.put(name, new DoubleTag(name, d));
+        value.put(name, new DoubleTag(d));
     }
 
     public float getFloat(String name) {
@@ -86,7 +81,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setFloat(String name, float f) {
-        value.put(name, new FloatTag(name, f));
+        value.put(name, new FloatTag(f));
     }
 
     public int[] getIntArray(String name) {
@@ -95,7 +90,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setIntArray(String name, int[] v) {
-        value.put(name, new IntArrayTag(name, v));
+        value.put(name, new IntArrayTag(v));
     }
 
     public int getInt(String name) {
@@ -104,7 +99,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setInt(String name, int v) {
-        value.put(name, new IntTag(name, v));
+        value.put(name, new IntTag(v));
     }
 
     public ListTag getList(String name) {
@@ -121,7 +116,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setLong(String name, long l) {
-        value.put(name, new LongTag(name, l));
+        value.put(name, new LongTag(l));
     }
 
     public short getShort(String name) {
@@ -130,7 +125,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setShort(String name, short s) {
-        value.put(name, new ShortTag(name, s));
+        value.put(name, new ShortTag(s));
     }
 
     public String getString(String name) {
@@ -139,7 +134,7 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     }
 
     public void setString(String name, String v) {
-        value.put(name, new StringTag(name, v));
+        value.put(name, new StringTag(v));
     }
 
     @Override
@@ -155,19 +150,17 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
     @Override
     public String toString() {
         StringBuilder ret = new StringBuilder();
-        ret.append(getName());
-        ret.append(" : ");
-        ret.append(toValueString());
-        return ret.toString();
-    }
-
-    @Override
-    public String toValueString() {
-        StringBuilder ret = new StringBuilder();
         ret.append('{');
+        boolean first = true;
         for (Map.Entry<String, Tag> t : value.entrySet()) {
+            if (first) {
+                first = false;
+            } else {
+                ret.append(", ");
+            }
+            ret.append(StringTag.toString(t.getKey()));
+            ret.append(" : ");
             ret.append(t.getValue());
-            ret.append(", ");
         }
         ret.append('}');
         return ret.toString();

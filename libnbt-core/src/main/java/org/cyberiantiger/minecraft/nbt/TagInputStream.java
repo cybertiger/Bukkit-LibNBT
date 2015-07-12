@@ -18,13 +18,15 @@ public class TagInputStream extends DataInputStream {
         super(in);
     }
 
-    public Tag readTag() throws IOException {
+    public <T extends Tag> TagTuple<T> readTag() throws IOException {
         int tagType = readByte() & 0xff;
         if (tagType >= TagType.values().length) {
             throw new IOException("Unknown tag type: " + tagType);
         }
         TagType type = TagType.values()[tagType];
-        return type.read(type.readName(this), this);
+        String name = type.readName(this);
+        Tag<T> t = type.read(this);
+        return new TagTuple(name, t);
     }
 
     public String readMCString() throws IOException {

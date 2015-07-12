@@ -11,8 +11,7 @@ package org.cyberiantiger.minecraft.nbt;
  */
 public final class StringTag extends Tag<String> {
     private final String value;
-    public StringTag(String name, String value) {
-        super(name);
+    public StringTag(String value) {
         this.value = value;
     }
 
@@ -27,8 +26,11 @@ public final class StringTag extends Tag<String> {
     }
 
     @Override
-    public String toValueString() {
-        String s = getValue();
+    public String toString() {
+        return StringTag.toString(getValue());
+    }
+
+    public static String toString(String s) {
         StringBuilder ret = new StringBuilder(s.length() + 4);
         ret.append('"');
         for (int i = 0; i < s.length(); i++) {
@@ -42,6 +44,4 @@ public final class StringTag extends Tag<String> {
         ret.append('"');
         return ret.toString();
     }
-            
-
 }

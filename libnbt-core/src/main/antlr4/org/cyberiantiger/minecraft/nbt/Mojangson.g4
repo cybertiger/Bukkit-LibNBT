@@ -1,68 +1,54 @@
 grammar Mojangson;
 
-mojangson
-    :   value
-    ;
-
-list
-    :   '[' object (',' object)* ']'
-    |   '[' list (',' list)* ']'
-    |   '[' bytelist (',' bytelist)* ']'
-    |   '[' intlist (',' intlist)* ']'
-    |   '[' BYTE (',' BYTE)* ']'
-    |   '[' SHORT (',' SHORT)* ']'
-    |   '[' INT (',' INT)* ']'
-    |   '[' LONG (',' LONG)* ']'
-    |   '[' FLOAT (',' FLOAT)* ']'
-    |   '[' DOUBLE (',' DOUBLE)* ']'
-    |   '[' ']' // empty array
-    ;
+options {
+    output = AST;
+}
 
 object
     :   '{' pair (',' pair)* ','? '}'
     |   '{' '}' // empty object
     ;
     
-pair:   STRING ':' value ;
+pair:   QUOTED_STRING ':' value ;
+
+list
+    :   '[' object (',' object)* ']'
+    |   '[' list (',' list)* ']'
+    |   '[' bytelist (',' bytelist)* ']'
+    |   '[' intlist (',' intlist)* ']'
+    |   '[' INTEGER INTEGER_QUALIFIER? (',' INTEGER)* ']'
+    |   '[' DECIMAL DECIMAL_QUALIFIER? (',' DECIMAL)* ']'
+    |   '[' ']' // empty array
+    ;
 
 
 bytelist
-    :   '<' BYTELISTBYTE (',' BYTELISTBYTE)* '>'
+    :   '<' INTEGER (',' INTEGER)* '>'
     |   '<' '>' // empty array
     ;
 
 intlist
-    :   '«' INT (',' INT)* '»'
+    :   '«' INTEGER (',' INTEGER)* '»'
     |   '«' '»' // empty array
     ;
 
 value
-    : 
+    :   DECIMAL DECIMAL_QUALIFIER?
+    |   INTEGER INTEGER_QUALIFIER?
+    |   QUOTED_STRING
     |   object  // recursion
     |   list // recursion
     |   bytelist
     |   intlist
-    |   BYTE
-    |   SHORT
-    |   INT
-    |   LONG
-    |   FLOAT
-    |   DOUBLE
     |   'null'
     ;
 
-STRING :  '"' (ESC | ~["\\])* '"' ;
-fragment ESC :   '\\' (["\\/bfnrt] | UNICODE) ;
-fragment UNICODE : 'u' HEX HEX HEX HEX ;
-fragment HEX : [0-9a-fA-F] ;
-fragment INTEGER :  [-]? ('0' | [1-9] [0-9]*) ;
-fragment DECIMAL : INTEGER '.' [0-9]+ ;
-fragment BYTELISTBYTE : INTEGER [bB]? ;
-fragment BYTE : INTEGER [bB] ;
-fragment SHORT : INTEGER [sS] ;
-fragment INT : INTEGER [iI]? ;
-fragment LONG : INTEGER [lL] ;
-fragment FLOAT : INTEGER [fF] | DECIMAL [fF] ;
-fragment DOUBLE : INTEGER [dD] | DECIMAL ;
-
+QUOTED_STRING :  '"' (ESC | ~["\\])* '"' ;
+ESC :   '\\' (["\\/bfnrt] | UNICODE) ;
+UNICODE : 'u' HEX HEX HEX HEX ;
+HEX : [0-9a-fA-F] ;
+DECIMAL : INTEGER '.' [0-9]+ ;
+INTEGER :  [-]? ('0' | [1-9] [0-9]*) ;
+DECIMAL_QUALIFIER : [fFdD] ;
+INTEGER_QUALIFIER : [bBsSiIlLfFdD] ;
 WS  :   [ \t\n\r]+ -> skip ;

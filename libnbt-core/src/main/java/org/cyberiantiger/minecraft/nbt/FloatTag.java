@@ -12,8 +12,7 @@ package org.cyberiantiger.minecraft.nbt;
 public final class FloatTag extends Tag {
     private final float value;
 
-    public FloatTag(String name, float value) {
-        super(name);
+    public FloatTag(float value) {
         this.value = value;
     }
 
@@ -32,7 +31,7 @@ public final class FloatTag extends Tag {
     }
 
     @Override
-    public String toValueString() {
+    public String toString() {
         return "" + getRawValue() + 'f';
     }
 }

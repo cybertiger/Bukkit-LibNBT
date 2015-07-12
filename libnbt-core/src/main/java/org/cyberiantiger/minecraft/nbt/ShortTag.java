@@ -12,8 +12,7 @@ package org.cyberiantiger.minecraft.nbt;
 public final class ShortTag extends Tag<Short> {
     private final short value;
 
-    public ShortTag(String name, short value) {
-        super(name);
+    public ShortTag(short value) {
         this.value = value;
     }
 
@@ -32,7 +31,7 @@ public final class ShortTag extends Tag<Short> {
     }
 
     @Override
-    public String toValueString() {
+    public String toString() {
         return "" + getRawValue() + 's';
     }
 }

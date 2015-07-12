@@ -11,8 +11,7 @@ package org.cyberiantiger.minecraft.nbt;
  */
 public final class IntArrayTag extends Tag<int[]> {
     private final int[] value;
-    public IntArrayTag(String name, int[] value) {
-        super (name);
+    public IntArrayTag(int[] value) {
         this.value = value;
     }
 
@@ -27,7 +26,7 @@ public final class IntArrayTag extends Tag<int[]> {
     }
 
     @Override
-    public String toValueString() {
+    public String toString() {
         StringBuilder ret = new StringBuilder();
         ret.append('«');
         int[] v = getValue();
