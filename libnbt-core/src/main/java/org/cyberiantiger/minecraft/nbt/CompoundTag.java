@@ -165,4 +165,26 @@ public final class CompoundTag extends Tag<Map<String, Tag>> {
         ret.append('}');
         return ret.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 31 * hash + (this.value != null ? this.value.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CompoundTag other = (CompoundTag) obj;
+        if (this.value != other.value && (this.value == null || !this.value.equals(other.value))) {
+            return false;
+        }
+        return true;
+    }
 }

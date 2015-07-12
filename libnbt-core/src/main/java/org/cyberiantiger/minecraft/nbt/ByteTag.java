@@ -34,4 +34,26 @@ public final class ByteTag extends Tag<Byte> {
     public String toString() {
         return "" + getRawValue() + 'b';
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + this.value;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ByteTag other = (ByteTag) obj;
+        if (this.value != other.value) {
+            return false;
+        }
+        return true;
+    }
 }

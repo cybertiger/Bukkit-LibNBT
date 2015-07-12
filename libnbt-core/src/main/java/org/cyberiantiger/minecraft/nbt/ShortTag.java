@@ -34,4 +34,26 @@ public final class ShortTag extends Tag<Short> {
     public String toString() {
         return "" + getRawValue() + 's';
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + this.value;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ShortTag other = (ShortTag) obj;
+        if (this.value != other.value) {
+            return false;
+        }
+        return true;
+    }
 }

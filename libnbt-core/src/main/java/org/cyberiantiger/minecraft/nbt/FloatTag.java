@@ -34,4 +34,27 @@ public final class FloatTag extends Tag {
     public String toString() {
         return "" + getRawValue() + 'f';
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Float.floatToIntBits(this.value);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FloatTag other = (FloatTag) obj;
+        if (Float.floatToIntBits(this.value) != Float.floatToIntBits(other.value)) {
+            return false;
+        }
+        return true;
+    }
+
 }

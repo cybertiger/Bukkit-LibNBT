@@ -34,5 +34,25 @@ public final class DoubleTag extends Tag {
         return "" + getRawValue() + 'd';
     }
 
-    
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 79 * hash + (int) (Double.doubleToLongBits(this.value) ^ (Double.doubleToLongBits(this.value) >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DoubleTag other = (DoubleTag) obj;
+        if (Double.doubleToLongBits(this.value) != Double.doubleToLongBits(other.value)) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -34,5 +34,26 @@ public final class LongTag extends Tag<Long> {
     public String toString() {
         return "" + getRawValue() + 'l';
     }
-    
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + (int) (this.value ^ (this.value >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final LongTag other = (LongTag) obj;
+        if (this.value != other.value) {
+            return false;
+        }
+        return true;
+    }
 }

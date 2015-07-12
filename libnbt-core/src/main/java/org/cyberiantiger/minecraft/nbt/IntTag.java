@@ -31,4 +31,25 @@ public final class IntTag extends Tag<Integer> {
         return TagType.INT;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + this.value;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final IntTag other = (IntTag) obj;
+        if (this.value != other.value) {
+            return false;
+        }
+        return true;
+    }
 }

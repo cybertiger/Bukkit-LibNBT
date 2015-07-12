@@ -6,6 +6,7 @@
 package org.cyberiantiger.minecraft.nbt;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 
 /**
  *
@@ -84,5 +85,31 @@ public final class ListTag extends Tag<Tag[]> {
         }
         ret.append(']');
         return ret.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 37 * hash + (this.listType != null ? this.listType.hashCode() : 0);
+        hash = 37 * hash + Arrays.deepHashCode(this.value);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ListTag other = (ListTag) obj;
+        if (this.listType != other.listType) {
+            return false;
+        }
+        if (!Arrays.deepEquals(this.value, other.value)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -41,4 +41,26 @@ public final class ByteArrayTag extends Tag<byte[]> {
         ret.append('>');
         return ret.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 43 * hash + Arrays.hashCode(this.value);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ByteArrayTag other = (ByteArrayTag) obj;
+        if (!Arrays.equals(this.value, other.value)) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -5,6 +5,8 @@
 
 package org.cyberiantiger.minecraft.nbt;
 
+import java.util.Arrays;
+
 /**
  *
  * @author antony
@@ -39,4 +41,27 @@ public final class IntArrayTag extends Tag<int[]> {
         ret.append('»');
         return ret.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + Arrays.hashCode(this.value);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final IntArrayTag other = (IntArrayTag) obj;
+        if (!Arrays.equals(this.value, other.value)) {
+            return false;
+        }
+        return true;
+    }
+
 }
