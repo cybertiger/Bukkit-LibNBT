@@ -11,7 +11,7 @@ package org.cyberiantiger.minecraft.nbt;
 public class EndTag extends Tag<Void> {
 
     public static final EndTag VALUE = new EndTag();
-    public static final TagTuple TUPLE = new TagTuple(null, VALUE);
+    static final TagTuple TUPLE = new TagTuple(null, VALUE);
 
     private EndTag() {
     }
