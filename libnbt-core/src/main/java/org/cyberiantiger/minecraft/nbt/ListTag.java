@@ -21,6 +21,9 @@ public final class ListTag extends Tag<Tag[]> {
             if (value != null) {
                 throw new IllegalArgumentException("Lists of TypeType.END must have null for their value");
             }
+        } else if (value.length == 0) {
+            listType = TagType.END;
+            value = null;
         } else {
             Class c = value.getClass().getComponentType();
             if (listType.getTagClass() != value.getClass().getComponentType())
