@@ -13,7 +13,7 @@ import java.util.Arrays;
  * @author antony
  */
 public final class ListTag extends Tag<Tag[]> {
-    private final TagType listType;
+    private TagType listType;
     private Tag[] value;
 
     public ListTag(TagType listType, Tag[] value) {
@@ -56,22 +56,33 @@ public final class ListTag extends Tag<Tag[]> {
     }
 
     public void add(Tag t) {
-        if (t.getType() != listType) {
-            throw new IllegalArgumentException();
+        if (listType == TagType.END) {
+            listType = t.getType();
+            value = listType.newArray(1);
+            value[0] = t;
+        } else {
+            if (t.getType() != listType) {
+                throw new IllegalArgumentException();
+            }
+            Tag[] newValue = listType.newArray(value.length + 1);
+            System.arraycopy(value, 0, newValue, 0, value.length);
+            newValue[newValue.length-1] = t;
+            this.value = newValue;
         }
-        Tag[] newValue = (Tag[]) Array.newInstance(listType.getTagClass(), value.length + 1);
-        System.arraycopy(value, 0, newValue, 0, value.length);
-        newValue[newValue.length-1] = t;
-        this.value = newValue;
     }
 
     public void remove(int idx) {
         if (idx < 0 || idx >= value.length)
             throw new IllegalArgumentException();
-        Tag[] newValue = (Tag[]) Array.newInstance(listType.getTagClass(), value.length - 1);
-        System.arraycopy(value, 0, newValue, 0, idx);
-        System.arraycopy(value, idx+1, newValue, idx, value.length-1-idx);
-        this.value = newValue;
+        if (value.length == 1) {
+            listType = TagType.END;
+            value = null;
+        } else {
+            Tag[] newValue = listType.newArray(value.length - 1);
+            System.arraycopy(value, 0, newValue, 0, idx);
+            System.arraycopy(value, idx+1, newValue, idx, value.length-1-idx);
+            this.value = newValue;
+        }
     }
 
     @Override
