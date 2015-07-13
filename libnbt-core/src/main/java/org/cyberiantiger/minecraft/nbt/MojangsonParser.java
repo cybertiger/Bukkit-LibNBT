@@ -308,6 +308,7 @@ public class MojangsonParser {
                         case '5':
                         case '6':
                         case '7':
+                        case '8':
                         case '9':
                             in.unread(ch);
                             // XXX
@@ -434,6 +435,7 @@ public class MojangsonParser {
                         case '5':
                         case '6':
                         case '7':
+                        case '8':
                         case '9':
                             in.unread(ch);
                             // XXX: Arse.

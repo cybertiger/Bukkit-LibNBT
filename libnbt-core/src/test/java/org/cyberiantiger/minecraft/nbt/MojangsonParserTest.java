@@ -74,11 +74,6 @@ public class MojangsonParserTest {
         testParse("{ key : [1l, 2l ,3l]}");
         testParse("{ key : [1f, 2f ,3f]}");
         testParse("{ key : [1d, 2d ,3d]}");
-        try {
-            // Illegal escape
-            testParse("\"\\a\" : {}");
-            fail();
-        } catch (MojangsonParseException e) {
-        }
+        testParse("{BlockEntity : { Patterns: [], Base: 8 }}");
     }
 }
