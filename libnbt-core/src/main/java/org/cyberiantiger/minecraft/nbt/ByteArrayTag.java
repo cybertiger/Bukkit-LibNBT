@@ -36,7 +36,7 @@ public final class ByteArrayTag extends Tag<byte[]> {
             if (i != 0) {
                 ret.append(", ");
             }
-            ret.append(v[i]);
+            ret.append(v[i]&0xff);
         }
         ret.append('>');
         return ret.toString();

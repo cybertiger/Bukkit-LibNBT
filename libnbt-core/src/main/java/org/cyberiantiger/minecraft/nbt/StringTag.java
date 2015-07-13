@@ -35,10 +35,30 @@ public final class StringTag extends Tag<String> {
         ret.append('"');
         for (int i = 0; i < s.length(); i++) {
             char ch = s.charAt(i);
-            if (ch == '"') {
-                ret.append("\\\"");
-            } else {
-                ret.append(ch);
+            switch (ch) {
+                case '\b':
+                    ret.append("\\b");
+                    break;
+                case '\f':
+                    ret.append("\\f");
+                    break;
+                case '\n':
+                    ret.append("\\n");
+                    break;
+                case '\r':
+                    ret.append("\\r");
+                    break;
+                case '\t':
+                    ret.append("\\t");
+                    break;
+                case '\\':
+                    ret.append("\\\\");
+                    break;
+                case '"':
+                    ret.append("\\\"");
+                    break;
+                default:
+                    ret.append(ch);
             }
         }
         ret.append('"');

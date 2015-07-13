@@ -27,6 +27,11 @@ public enum TagType {
         public void writeName(String name, TagOutputStream out) throws IOException {
             // NOOP
         }
+
+        @Override
+        public EndTag[] newArray(int size) {
+            throw new IllegalStateException("Cannot construct arrays of end tags");
+        }
     },
     BYTE(ByteTag.class, Byte.class) {
 
@@ -36,6 +41,11 @@ public enum TagType {
 
         public ByteTag read(TagInputStream in) throws IOException {
             return new ByteTag(in.readByte());
+        }
+
+        @Override
+        public ByteTag[] newArray(int size) {
+            return new ByteTag[size];
         }
     },
     SHORT(ShortTag.class, Short.class) {
@@ -47,6 +57,11 @@ public enum TagType {
         public ShortTag read(TagInputStream in) throws IOException {
             return new ShortTag(in.readShort());
         }
+
+        @Override
+        public ShortTag[] newArray(int size) {
+            return new ShortTag[size];
+        }
     },
     INT(IntTag.class, Integer.class) {
 
@@ -56,6 +71,11 @@ public enum TagType {
 
         public IntTag read(TagInputStream in) throws IOException {
             return new IntTag(in.readInt());
+        }
+
+        @Override
+        public IntTag[] newArray(int size) {
+            return new IntTag[size];
         }
     },
     LONG(LongTag.class, Long.class) {
@@ -67,6 +87,11 @@ public enum TagType {
         public LongTag read(TagInputStream in) throws IOException {
             return new LongTag(in.readLong());
         }
+
+        @Override
+        public LongTag[] newArray(int size) {
+            return new LongTag[size];
+        }
     },
     FLOAT(FloatTag.class, Float.class) {
 
@@ -77,6 +102,11 @@ public enum TagType {
         public FloatTag read(TagInputStream in) throws IOException {
             return new FloatTag(in.readFloat());
         }
+
+        @Override
+        public FloatTag[] newArray(int size) {
+            return new FloatTag[size];
+        }
     },
     DOUBLE(DoubleTag.class, Double.class) {
 
@@ -86,6 +116,11 @@ public enum TagType {
 
         public DoubleTag read(TagInputStream in) throws IOException {
             return new DoubleTag(in.readDouble());
+        }
+
+        @Override
+        public DoubleTag[] newArray(int size) {
+            return new DoubleTag[size];
         }
     },
     BYTE_ARRAY(ByteArrayTag.class, byte[].class) {
@@ -102,6 +137,11 @@ public enum TagType {
             in.readFully(value);
             return new ByteArrayTag(value);
         }
+
+        @Override
+        public ByteArrayTag[] newArray(int size) {
+            return new ByteArrayTag[size];
+        }
     },
     STRING(StringTag.class, String.class) {
 
@@ -111,6 +151,11 @@ public enum TagType {
 
         public StringTag read(TagInputStream in) throws IOException {
             return new StringTag(in.readMCString());
+        }
+
+        @Override
+        public StringTag[] newArray(int size) {
+            return new StringTag[size];
         }
     },
     LIST(ListTag.class, Tag[].class) {
@@ -146,6 +191,11 @@ public enum TagType {
                 return new ListTag(type, value);
             }
         }
+
+        @Override
+        public ListTag[] newArray(int size) {
+            return new ListTag[size];
+        }
     },
     COMPOUND(CompoundTag.class, Map.class) {
 
@@ -167,6 +217,11 @@ public enum TagType {
             }
             return new CompoundTag(values);
         }
+
+        @Override
+        public CompoundTag[] newArray(int size) {
+            return new CompoundTag[size];
+        }
     },
     INT_ARRAY(IntArrayTag.class, int[].class) {
 
@@ -185,6 +240,11 @@ public enum TagType {
                 value[i] = in.readInt();
             }
             return new IntArrayTag(value);
+        }
+
+        @Override
+        public IntArrayTag[] newArray(int size) {
+            return new IntArrayTag[size];
         }
     };
     
@@ -215,4 +275,6 @@ public enum TagType {
     public void writeName(String name, TagOutputStream out) throws IOException {
         out.writeMCString(name);
     }
+
+    public abstract <T extends Tag> T[] newArray(int size);
 }
