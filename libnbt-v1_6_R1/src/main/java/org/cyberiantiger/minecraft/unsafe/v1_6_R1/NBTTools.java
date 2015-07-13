@@ -51,50 +51,52 @@ import org.cyberiantiger.minecraft.nbt.TagType;
  */
 public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTTools {
 
-    public NBTTagCompound toNativeCompound(CompoundTag tag) {
-        NBTTagCompound result = new NBTTagCompound(tag.getName());
-        for (Tag t : tag.getValue().values()) {
+    public NBTTagCompound toNativeCompound(String root, CompoundTag tag) {
+        NBTTagCompound result = new NBTTagCompound(root);
+        for (Map.Entry<String,Tag> e : tag.getValue().entrySet()) {
+            String name = e.getKey();
+            Tag t = e.getValue();
             switch (t.getType()) {
                 case BYTE:
-                    result.setByte(t.getName(), ((ByteTag) t).getRawValue());
+                    result.setByte(name, ((ByteTag) t).getRawValue());
                     break;
                 case BYTE_ARRAY:
-                    result.setByteArray(t.getName(), ((ByteArrayTag) t).getValue());
+                    result.setByteArray(name, ((ByteArrayTag) t).getValue());
                     break;
                 case COMPOUND:
-                    result.setCompound(t.getName(), toNativeCompound(((CompoundTag) t)));
+                    result.setCompound(name, toNativeCompound(name, ((CompoundTag) t)));
                     break;
                 case DOUBLE:
-                    result.setDouble(t.getName(), ((DoubleTag) t).getRawValue());
+                    result.setDouble(name, ((DoubleTag) t).getRawValue());
                     break;
                 case FLOAT:
-                    result.setFloat(t.getName(), ((FloatTag) t).getRawValue());
+                    result.setFloat(name, ((FloatTag) t).getRawValue());
                     break;
                 case INT:
-                    result.setInt(t.getName(), ((IntTag) t).getRawValue());
+                    result.setInt(name, ((IntTag) t).getRawValue());
                     break;
                 case INT_ARRAY:
-                    result.setIntArray(t.getName(), ((IntArrayTag) t).getValue());
+                    result.setIntArray(name, ((IntArrayTag) t).getValue());
                     break;
                 case LIST:
-                    result.set(t.getName(), toNativeList((ListTag) t));
+                    result.set(name, toNativeList(name, (ListTag) t));
                     break;
                 case LONG:
-                    result.setLong(t.getName(), ((LongTag) t).getValue());
+                    result.setLong(name, ((LongTag) t).getValue());
                     break;
                 case SHORT:
-                    result.setShort(t.getName(), ((ShortTag) t).getValue());
+                    result.setShort(name, ((ShortTag) t).getValue());
                     break;
                 case STRING:
-                    result.setString(t.getName(), ((StringTag) t).getValue());
+                    result.setString(name, ((StringTag) t).getValue());
                     break;
             }
         }
         return result;
     }
 
-    public NBTTagList toNativeList(ListTag tag) {
-        NBTTagList result = new NBTTagList(tag.getName());
+    public NBTTagList toNativeList(String root, ListTag tag) {
+        NBTTagList result = new NBTTagList(root);
 
         switch (tag.getListType()) {
             case BYTE:
@@ -109,7 +111,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                 break;
             case COMPOUND:
                 for (CompoundTag t : (CompoundTag[]) tag.getValue()) {
-                    result.add(toNativeCompound(t));
+                    result.add(toNativeCompound(null, t));
                 }
                 break;
             case DOUBLE:
@@ -134,7 +136,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                 break;
             case LIST:
                 for (ListTag t : (ListTag[]) tag.getValue()) {
-                    result.add(toNativeList((ListTag) t));
+                    result.add(toNativeList(null, (ListTag) t));
                 }
             case LONG:
                 for (LongTag t : (LongTag[]) tag.getValue()) {
@@ -178,41 +180,41 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                 for (NBTBase b : map.values()) {
                     switch (TagType.values()[b.getTypeId()]) {
                         case BYTE:
-                            result.put(b.getName(), new ByteTag(b.getName(), ((NBTTagByte) b).data));
+                            result.put(b.getName(), new ByteTag(((NBTTagByte) b).data));
                             break;
                         case BYTE_ARRAY:
-                            result.put(b.getName(), new ByteArrayTag(b.getName(), ((NBTTagByteArray) b).data));
+                            result.put(b.getName(), new ByteArrayTag(((NBTTagByteArray) b).data));
                             break;
                         case COMPOUND:
                             result.put(b.getName(), fromNativeCompound((NBTTagCompound) b));
                             break;
                         case DOUBLE:
-                            result.put(b.getName(), new DoubleTag(b.getName(), ((NBTTagDouble) b).data));
+                            result.put(b.getName(), new DoubleTag(((NBTTagDouble) b).data));
                             break;
                         case FLOAT:
-                            result.put(b.getName(), new FloatTag(b.getName(), ((NBTTagFloat) b).data));
+                            result.put(b.getName(), new FloatTag(((NBTTagFloat) b).data));
                             break;
                         case INT:
-                            result.put(b.getName(), new IntTag(b.getName(), ((NBTTagInt) b).data));
+                            result.put(b.getName(), new IntTag(((NBTTagInt) b).data));
                             break;
                         case INT_ARRAY:
-                            result.put(b.getName(), new IntArrayTag(b.getName(), ((NBTTagIntArray) b).data));
+                            result.put(b.getName(), new IntArrayTag(((NBTTagIntArray) b).data));
                             break;
                         case LIST:
                             result.put(b.getName(), fromNativeList((NBTTagList) b));
                             break;
                         case LONG:
-                            result.put(b.getName(), new LongTag(b.getName(), ((NBTTagLong) b).data));
+                            result.put(b.getName(), new LongTag(((NBTTagLong) b).data));
                             break;
                         case SHORT:
-                            result.put(b.getName(), new ShortTag(b.getName(), ((NBTTagShort) b).data));
+                            result.put(b.getName(), new ShortTag(((NBTTagShort) b).data));
                             break;
                         case STRING:
-                            result.put(b.getName(), new StringTag(b.getName(), ((NBTTagString) b).data));
+                            result.put(b.getName(), new StringTag(((NBTTagString) b).data));
                             break;
                     }
                 }
-                return new CompoundTag(tag.getName(), result);
+                return new CompoundTag(result);
             } catch (IllegalArgumentException ex) {
                 Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
@@ -247,12 +249,12 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
             switch (type) {
                 case BYTE:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new ByteTag(null, ((NBTTagByte) tag.get(i)).data);
+                        t[i] = new ByteTag(((NBTTagByte) tag.get(i)).data);
                     }
                     break;
                 case BYTE_ARRAY:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new ByteArrayTag(null, ((NBTTagByteArray) tag.get(i)).data);
+                        t[i] = new ByteArrayTag(((NBTTagByteArray) tag.get(i)).data);
                     }
                     break;
                 case COMPOUND:
@@ -266,22 +268,22 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                     break;
                 case DOUBLE:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new DoubleTag(null, ((NBTTagDouble) tag.get(i)).data);
+                        t[i] = new DoubleTag(((NBTTagDouble) tag.get(i)).data);
                     }
                     break;
                 case FLOAT:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new FloatTag(null, ((NBTTagFloat) tag.get(i)).data);
+                        t[i] = new FloatTag(((NBTTagFloat) tag.get(i)).data);
                     }
                     break;
                 case INT:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new IntTag(null, ((NBTTagInt) tag.get(i)).data);
+                        t[i] = new IntTag(((NBTTagInt) tag.get(i)).data);
                     }
                     break;
                 case INT_ARRAY:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new IntArrayTag(null, ((NBTTagIntArray) tag.get(i)).data);
+                        t[i] = new IntArrayTag(((NBTTagIntArray) tag.get(i)).data);
                     }
                     break;
                 case LIST:
@@ -291,21 +293,21 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                     break;
                 case LONG:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new LongTag(null, ((NBTTagLong) tag.get(i)).data);
+                        t[i] = new LongTag(((NBTTagLong) tag.get(i)).data);
                     }
                     break;
                 case SHORT:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new ShortTag(null, ((NBTTagShort) tag.get(i)).data);
+                        t[i] = new ShortTag(((NBTTagShort) tag.get(i)).data);
                     }
                     break;
                 case STRING:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new StringTag(null, ((NBTTagString) tag.get(i)).data);
+                        t[i] = new StringTag(((NBTTagString) tag.get(i)).data);
                     }
                     break;
             }
-            return new ListTag(tag.getName(), type, t);
+            return new ListTag(type, t);
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
@@ -320,7 +322,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
         if (tileEntity == null) {
             return;
         }
-        tileEntity.a(toNativeCompound(tag));
+        tileEntity.a(toNativeCompound(null, tag));
         tileEntity.update();
         craftWorld.getHandle().notify(block.getX(), block.getY(), block.getZ());
     }
@@ -359,7 +361,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
     @Override
     public ItemStack createItemStack(CompoundTag tag) {
         net.minecraft.server.v1_6_R1.ItemStack nativeStack = new net.minecraft.server.v1_6_R1.ItemStack((net.minecraft.server.v1_6_R1.Item)null);
-        nativeStack.c(toNativeCompound(tag));
+        nativeStack.c(toNativeCompound(null, tag));
         return CraftItemStack.asCraftMirror(nativeStack);
     }
 
@@ -373,7 +375,7 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
     @Override
     public void updateEntity(Entity entity, CompoundTag tag) {
         CraftEntity craftEntity = (CraftEntity)entity;
-        craftEntity.getHandle().f(toNativeCompound(tag));
+        craftEntity.getHandle().f(toNativeCompound(null, tag));
     }
 
     @Override

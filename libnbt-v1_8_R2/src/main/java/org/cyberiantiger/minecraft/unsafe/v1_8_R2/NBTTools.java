@@ -193,41 +193,41 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                     NBTBase b = e.getValue();
                     switch (TagType.values()[b.getTypeId()]) {
                         case BYTE:
-                            result.put(name, new ByteTag(name, ((NBTTagByte) b).f()));
+                            result.put(name, new ByteTag(((NBTTagByte) b).f()));
                             break;
                         case BYTE_ARRAY:
-                            result.put(name, new ByteArrayTag(name, ((NBTTagByteArray) b).c()));
+                            result.put(name, new ByteArrayTag(((NBTTagByteArray) b).c()));
                             break;
                         case COMPOUND:
                             result.put(name, fromNativeCompound(name, (NBTTagCompound) b));
                             break;
                         case DOUBLE:
-                            result.put(name, new DoubleTag(name, ((NBTTagDouble) b).g()));
+                            result.put(name, new DoubleTag(((NBTTagDouble) b).g()));
                             break;
                         case FLOAT:
-                            result.put(name, new FloatTag(name, ((NBTTagFloat) b).h()));
+                            result.put(name, new FloatTag(((NBTTagFloat) b).h()));
                             break;
                         case INT:
-                            result.put(name, new IntTag(name, ((NBTTagInt) b).d()));
+                            result.put(name, new IntTag(((NBTTagInt) b).d()));
                             break;
                         case INT_ARRAY:
-                            result.put(name, new IntArrayTag(name, ((NBTTagIntArray) b).c()));
+                            result.put(name, new IntArrayTag(((NBTTagIntArray) b).c()));
                             break;
                         case LIST:
                             result.put(name, fromNativeList(name, (NBTTagList) b));
                             break;
                         case LONG:
-                            result.put(name, new LongTag(name, ((NBTTagLong) b).c()));
+                            result.put(name, new LongTag(((NBTTagLong) b).c()));
                             break;
                         case SHORT:
-                            result.put(name, new ShortTag(name, ((NBTTagShort) b).e()));
+                            result.put(name, new ShortTag(((NBTTagShort) b).e()));
                             break;
                         case STRING:
-                            result.put(name, new StringTag(name, ((NBTTagString) b).a_()));
+                            result.put(name, new StringTag(((NBTTagString) b).a_()));
                             break;
                     }
                 }
-                return new CompoundTag(parentName, result);
+                return new CompoundTag(result);
             } catch (IllegalArgumentException ex) {
                 Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalAccessException ex) {
@@ -267,12 +267,12 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
             switch (type) {
                 case BYTE:
                     for (int i = 0; i < list.size(); i++) {
-                        t[i] = new ByteTag(null, ((NBTTagByte)list.get(i)).f());
+                        t[i] = new ByteTag(((NBTTagByte)list.get(i)).f());
                     }
                     break;
                 case BYTE_ARRAY:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new ByteArrayTag(null, ((NBTTagByteArray)list.get(i)).c());
+                        t[i] = new ByteArrayTag(((NBTTagByteArray)list.get(i)).c());
                     }
                     break;
                 case COMPOUND:
@@ -286,22 +286,22 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                     break;
                 case DOUBLE:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new DoubleTag(null, ((NBTTagDouble) list.get(i)).g());
+                        t[i] = new DoubleTag(((NBTTagDouble) list.get(i)).g());
                     }
                     break;
                 case FLOAT:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new FloatTag(null, ((NBTTagFloat) list.get(i)).h());
+                        t[i] = new FloatTag(((NBTTagFloat) list.get(i)).h());
                     }
                     break;
                 case INT:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new IntTag(null, ((NBTTagInt) list.get(i)).d());
+                        t[i] = new IntTag(((NBTTagInt) list.get(i)).d());
                     }
                     break;
                 case INT_ARRAY:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new IntArrayTag(null, ((NBTTagIntArray) list.get(i)).c());
+                        t[i] = new IntArrayTag(((NBTTagIntArray) list.get(i)).c());
                     }
                     break;
                 case LIST:
@@ -311,21 +311,21 @@ public final class NBTTools implements org.cyberiantiger.minecraft.unsafe.NBTToo
                     break;
                 case LONG:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new LongTag(null, ((NBTTagLong) list.get(i)).c());
+                        t[i] = new LongTag(((NBTTagLong) list.get(i)).c());
                     }
                     break;
                 case SHORT:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new ShortTag(null, ((NBTTagShort) list.get(i)).e());
+                        t[i] = new ShortTag(((NBTTagShort) list.get(i)).e());
                     }
                     break;
                 case STRING:
                     for (int i = 0; i < tag.size(); i++) {
-                        t[i] = new StringTag(null, ((NBTTagString) list.get(i)).a_());
+                        t[i] = new StringTag(((NBTTagString) list.get(i)).a_());
                     }
                     break;
             }
-            return new ListTag(parentName, type, t);
+            return new ListTag(type, t);
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(NBTTools.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
