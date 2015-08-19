@@ -5,6 +5,7 @@
     <version>2.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
+        <module>libnbt-standalone</module>
         <module>libnbt-core</module>
         <module>libnbt-v1_4_R1</module>
         <module>libnbt-v1_5_R1</module>
