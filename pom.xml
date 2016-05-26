@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cyberiantiger.minecraft</groupId>
     <artifactId>libnbt-parent</artifactId>
-    <version>2.5-SNAPSHOT</version>
+    <version>2.5</version>
     <packaging>pom</packaging>
     <modules>
         <module>libnbt-standalone</module>
@@ -34,7 +34,8 @@
         <url>https://github.com/cybertiger/Bukkit-LibNBT/</url>
         <connection>scm:git:git://github.com/cybertiger/Bukkit-LibNBT.git</connection>
         <developerConnection>scm:git:git@github.com:cybertiger/Bukkit-LibNBT.git</developerConnection>
-    </scm>
+      <tag>libnbt-parent-2.5</tag>
+  </scm>
     <repositories>
         <repository>
             <id>bukkit-repo</id>
