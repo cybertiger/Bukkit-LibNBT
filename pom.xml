@@ -7,13 +7,6 @@
     <modules>
         <module>libnbt-standalone</module>
         <module>libnbt-core</module>
-        <module>libnbt-v1_4_R1</module>
-        <module>libnbt-v1_5_R1</module>
-        <module>libnbt-v1_5_R2</module>
-        <module>libnbt-v1_5_R3</module>
-        <module>libnbt-v1_6_R1</module>
-        <module>libnbt-v1_6_R2</module>
-        <module>libnbt-v1_6_R3</module>
         <module>libnbt-v1_7_R1</module>
         <module>libnbt-v1_7_R2</module>
         <module>libnbt-v1_7_R3</module>
@@ -24,6 +17,7 @@
         <module>libnbt-v1_9_R1</module>
         <module>libnbt-v1_9_R2</module>
         <module>libnbt-v1_10_R1</module>
+        <module>libnbt-v1_11_R1</module>
         <module>libnbt</module>
     </modules>
     <properties>
