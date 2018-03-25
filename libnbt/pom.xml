@@ -52,5 +52,10 @@
       <artifactId>libnbt-v1_11_R1</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>libnbt-v1_12_R1</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
