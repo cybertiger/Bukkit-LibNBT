@@ -7,13 +7,6 @@
     <modules>
         <module>libnbt-standalone</module>
         <module>libnbt-core</module>
-        <module>libnbt-v1_7_R1</module>
-        <module>libnbt-v1_7_R2</module>
-        <module>libnbt-v1_7_R3</module>
-        <module>libnbt-v1_7_R4</module>
-        <module>libnbt-v1_8_R1</module>
-        <module>libnbt-v1_8_R2</module>
-        <module>libnbt-v1_8_R3</module>
         <module>libnbt-v1_9_R1</module>
         <module>libnbt-v1_9_R2</module>
         <module>libnbt-v1_10_R1</module>
@@ -32,10 +25,6 @@
       <tag>HEAD</tag>
   </scm>
     <repositories>
-        <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
