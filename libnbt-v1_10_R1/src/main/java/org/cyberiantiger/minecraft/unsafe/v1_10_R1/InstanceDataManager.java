@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.logging.Level;
 import net.minecraft.server.v1_10_R1.ChunkRegionLoader;
 import net.minecraft.server.v1_10_R1.DataConverterManager;
@@ -116,5 +118,9 @@ class InstanceDataManager extends ServerNBTManager {
         }
         return result;
     }
-    
+
+    @Override
+    public UUID getUUID() {
+        return UUID.nameUUIDFromBytes( ("libnbt:" + world).getBytes(StandardCharsets.UTF_8) );
+    }
 }
