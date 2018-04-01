@@ -32,8 +32,33 @@ public class CBShim {
         PRIMITIVE_TYPES.put(Void.TYPE, Void.class);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T createShim(Class<T> type, Plugin plugin, Object... args) {
-        T ret = null;
+        String version = getNmsVersion(plugin);
+        try {
+            Class<? extends T> resultType = loadShim(type, version);
+            T result = newInstance(resultType, args);
+            if (result instanceof VersionedNMS) {
+                String targetVersion = ((VersionedNMS) result).getTargetVersion();
+                if (!version.equals(targetVersion)) {
+                    resultType = loadShim(type, targetVersion);
+                    return newInstance(resultType, args);
+                }
+            }
+            return result;
+        } catch (ReflectiveOperationException | IllegalArgumentException ex) {
+            unsupportedVersion(plugin.getServer(), ex);
+        }
+        // Unreachable
+        return null;
+    }
+
+    /**
+     * Get the versioning on NMS.
+     * @param plugin A plugin loaded by the server.
+     * @return A string such as v1_12_R1 used in the package name of NMS.
+     */
+    private static String getNmsVersion(Plugin plugin) {
         Class<?> serverClass = plugin.getServer().getClass();
         while (!serverClass.getPackage().getName().startsWith(CRAFTBUKKIT_PACKAGE) ) {
             serverClass = serverClass.getSuperclass();
@@ -46,45 +71,34 @@ public class CBShim {
         if (i == -1) {
             unsupportedVersion(plugin.getServer());
         }
-        String childPackage = pkg.substring(i+1);
-        String className = type.getPackage().getName() + '.' + childPackage + '.' + type.getSimpleName();
-        try {
-            Class<T> typeClass = (Class<T>) CBShim.class.getClassLoader().loadClass(className);
-            Constructor[] constructors = typeClass.getConstructors();
-            LOOP:
-            for (Constructor constructor : constructors) {
-                Class[] parameterTypes = constructor.getParameterTypes();
-                if (args.length != parameterTypes.length) {
+        return pkg.substring(i+1);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T newInstance(Class<? extends T> type, Object[] args) throws ReflectiveOperationException {
+        LOOP:
+        for (Constructor constructor : type.getConstructors()) {
+            Class[] parameterTypes = constructor.getParameterTypes();
+            if (args.length != parameterTypes.length) {
+                continue LOOP;
+            }
+            for (int i = 0; i < parameterTypes.length; i++) {
+                Class parameterType = parameterTypes[i];
+                if (PRIMITIVE_TYPES.containsKey(parameterType))
+                    parameterType = PRIMITIVE_TYPES.get(parameterType);
+                if (!parameterType.isInstance(args[i])) {
                     continue LOOP;
                 }
-                for (i = 0; i < parameterTypes.length; i++) {
-                    Class parameterType = parameterTypes[i];
-                    if (PRIMITIVE_TYPES.containsKey(parameterType))
-                        parameterType = PRIMITIVE_TYPES.get(parameterType);
-                    if (!parameterType.isInstance(args[i])) {
-                        continue LOOP;
-                    }
-                }
-                ret = (T) constructor.newInstance(args);
-                break LOOP;
             }
-            if (ret == null) {
-                throw new UnsupportedOperationException("Shim " + type.getSimpleName() + " does not provide a compatible constructor for passed arguments: " + Arrays.asList(args));
-            }
-            return ret;
-        } catch (ClassNotFoundException ex) {
-            unsupportedVersion(plugin.getServer(), ex);
-        } catch (InstantiationException ex) {
-            unsupportedVersion(plugin.getServer(), ex);
-        } catch (IllegalAccessException ex) {
-            unsupportedVersion(plugin.getServer(), ex);
-        } catch (IllegalArgumentException ex) {
-            unsupportedVersion(plugin.getServer(), ex);
-        } catch (InvocationTargetException ex) {
-            unsupportedVersion(plugin.getServer(), ex);
+            return (T) constructor.newInstance(args);
         }
-        // unreached, stupid compiler.
-        return null;
+        throw new IllegalArgumentException("Constructor with arguments :" + Arrays.toString(args) + " not found");
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<? extends T> loadShim(Class<T> type, String version) throws ReflectiveOperationException {
+        String className = type.getPackage().getName() + '.' + version + '.' + type.getSimpleName();
+        return (Class<? extends T>) Class.forName(className);
     }
 
     private static void unsupportedVersion(Server server) {

@@ -12,6 +12,8 @@
         <module>libnbt-v1_10_R1</module>
         <module>libnbt-v1_11_R1</module>
         <module>libnbt-v1_12_R1</module>
+        <module>libnbt-v1_12_R1_1</module>
+        <module>libnbt-v1_12_R1_2</module>
         <module>libnbt</module>
     </modules>
     <properties>
