@@ -14,7 +14,7 @@ import org.cyberiantiger.minecraft.unsafe.VersionedNMS;
 
 // Safe not to extend ChunkRegionLoader - CB does not cast to ChunkRegionLoader anywhere.
 
-public final class InstanceChunkLoader implements IChunkLoader, IAsyncChunkSaver, VersionedNMS {
+public final class InstanceChunkLoader implements IChunkLoader, IAsyncChunkSaver {
     private final ChunkRegionLoader loadLoader;
     private final ChunkRegionLoader saveLoader;
 
@@ -37,29 +37,6 @@ public final class InstanceChunkLoader implements IChunkLoader, IAsyncChunkSaver
             return saveLoader.a(world, i, j);
         }
         return loadLoader.a(world, i, j);
-    }
-
-    @Override
-    public String getTargetVersion() throws ReflectiveOperationException {
-        if (IChunkLoader.class.getMethod("a",
-                net.minecraft.server.v1_12_R1.World.class,
-                net.minecraft.server.v1_12_R1.Chunk.class) != null) {
-            // Versions 1.12, 1.12.1
-            return "v1_12_R1";
-        } else if (IChunkLoader.class.getMethod("saveChunk",
-                net.minecraft.server.v1_12_R1.World.class,
-                net.minecraft.server.v1_12_R1.Chunk.class,
-                boolean.class) != null) {
-            // Spigot 1.12.2
-            return "v1_12_R1_1";
-        } else if (IChunkLoader.class.getMethod("saveChunk",
-                net.minecraft.server.v1_12_R1.World.class,
-                net.minecraft.server.v1_12_R1.Chunk.class) != null) {
-            // Craftbukkit 1.12.2
-            return "v1_12_R1_2";
-        } else {
-            throw new IllegalStateException("Incompatible NMS version");
-        }
     }
 
     /**

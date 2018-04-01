@@ -9,6 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 
@@ -36,15 +38,12 @@ public class CBShim {
     public static <T> T createShim(Class<T> type, Plugin plugin, Object... args) {
         String version = getNmsVersion(plugin);
         try {
+            version = Optional.ofNullable(loadVersioning(type, version))
+                    .map(VersionedNMS::getTargetVersion)
+                    .orElse(version);
             Class<? extends T> resultType = loadShim(type, version);
             T result = newInstance(resultType, args);
-            if (result instanceof VersionedNMS) {
-                String targetVersion = ((VersionedNMS) result).getTargetVersion();
-                if (!version.equals(targetVersion)) {
-                    resultType = loadShim(type, targetVersion);
-                    return newInstance(resultType, args);
-                }
-            }
+            plugin.getLogger().info("Loaded " + type.getName() + " as " + resultType.getName());
             return result;
         } catch (ReflectiveOperationException | IllegalArgumentException ex) {
             unsupportedVersion(plugin.getServer(), ex);
@@ -99,6 +98,20 @@ public class CBShim {
     private static <T> Class<? extends T> loadShim(Class<T> type, String version) throws ReflectiveOperationException {
         String className = type.getPackage().getName() + '.' + version + '.' + type.getSimpleName();
         return (Class<? extends T>) Class.forName(className);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static VersionedNMS loadVersioning(Class<?> type, String version) {
+        try {
+            String className = type.getPackage().getName() + '.' + version + '.' + type.getSimpleName() + "VersionedNMS";
+            Class<?> versioningType = Class.forName(className);
+            if (VersionedNMS.class.isAssignableFrom(versioningType)) {
+                return (VersionedNMS) versioningType.newInstance();
+            }
+        } catch (ReflectiveOperationException ex) {
+            // ignored.
+        }
+        return null;
     }
 
     private static void unsupportedVersion(Server server) {
